@@ -129,6 +129,7 @@
     
     //prevent last page flicker on disappearing
     self.alpha = 0;
+    [self disableAutoScroll];
     
     //Calling removeFromSuperview from scrollViewDidEndDecelerating: method leads to crash on iOS versions < 7.0.
     //removeFromSuperview should be called after a delay
@@ -727,16 +728,21 @@ float easeOutValue(float value) {
 #pragma mark - Timer
 
 - (void)enableAutoScroll {
-    self.autoScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollingInterval
-                                                               target:self
-                                                             selector:@selector(pageTapped:)
-                                                             userInfo:nil
-                                                              repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:self.autoScrollingTimer forMode:NSRunLoopCommonModes];
+    if (self.autoScrolling && self.autoScrollingTimer == nil) {
+        self.autoScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollingInterval
+                                                                   target:self
+                                                                 selector:@selector(pageTapped:)
+                                                                 userInfo:nil
+                                                                  repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:self.autoScrollingTimer forMode:NSRunLoopCommonModes];
+    }
 }
 
 - (void)disableAutoScroll {
-    [self.autoScrollingTimer invalidate];
+    if (self.autoScrolling && self.autoScrollingTimer != nil) {
+        [self.autoScrollingTimer invalidate];
+        self.autoScrollingTimer = nil;
+    }
 }
 
 @end
