@@ -1,5 +1,5 @@
 //
-//  EAIntroPage.h
+//  ECScrollingPage.h
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
 
@@ -7,7 +7,7 @@
 
 typedef void (^VoidBlock)();
 
-@interface EAIntroPage : NSObject
+@interface ECScrollingPage : NSObject
 
 // background used for cross-dissolve
 @property (nonatomic, strong) UIImage *bgImage;
@@ -15,7 +15,7 @@ typedef void (^VoidBlock)();
 @property (nonatomic, assign) bool showTitleView;
 
 
-// properties for default EAIntroPage layout
+// properties for default ECScrollingPage layout
 //
 // title image Y position - from top of the screen
 // title and description labels Y position - from bottom of the screen

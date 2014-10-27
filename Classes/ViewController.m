@@ -23,59 +23,59 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // using self.navigationController.view - to display EAIntroView above navigation bar
+    // using self.navigationController.view - to display ECScrollingPageView above navigation bar
     rootView = self.navigationController.view;
 }
 
 - (void)showIntroWithCrossDissolve {
-    EAIntroPage *page1 = [EAIntroPage page];
+    ECScrollingPage *page1 = [ECScrollingPage page];
     page1.title = @"Hello world";
     page1.desc = sampleDescription1;
     page1.bgImage = [UIImage imageNamed:@"bg1"];
     page1.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title1"]];
     
-    EAIntroPage *page2 = [EAIntroPage page];
+    ECScrollingPage *page2 = [ECScrollingPage page];
     page2.title = @"This is page 2";
     page2.desc = sampleDescription2;
     page2.bgImage = [UIImage imageNamed:@"bg2"];
     page2.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title2"]];
     
-    EAIntroPage *page3 = [EAIntroPage page];
+    ECScrollingPage *page3 = [ECScrollingPage page];
     page3.title = @"This is page 3";
     page3.desc = sampleDescription3;
     page3.bgImage = [UIImage imageNamed:@"bg3"];
     page3.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title3"]];
     
-    EAIntroPage *page4 = [EAIntroPage page];
+    ECScrollingPage *page4 = [ECScrollingPage page];
     page4.title = @"This is page 4";
     page4.desc = sampleDescription4;
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
     [intro setDelegate:self];
     
     [intro showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithFixedTitleView {
-    EAIntroPage *page1 = [EAIntroPage page];
+    ECScrollingPage *page1 = [ECScrollingPage page];
     page1.title = @"Hello world";
     page1.desc = sampleDescription1;
     
-    EAIntroPage *page2 = [EAIntroPage page];
+    ECScrollingPage *page2 = [ECScrollingPage page];
     page2.title = @"This is page 2";
     page2.desc = sampleDescription2;
     
-    EAIntroPage *page3 = [EAIntroPage page];
+    ECScrollingPage *page3 = [ECScrollingPage page];
     page3.title = @"This is page 3";
     page3.desc = sampleDescription3;
     
-    EAIntroPage *page4 = [EAIntroPage page];
+    ECScrollingPage *page4 = [ECScrollingPage page];
     page4.title = @"This is page 4";
     page4.desc = sampleDescription4;
     
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
     [intro setDelegate:self];
     UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title1"]];
     intro.titleView = titleView;
@@ -86,12 +86,12 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
 }
 
 - (void)showIntroWithCustomPages {
-    EAIntroPage *page1 = [EAIntroPage page];
+    ECScrollingPage *page1 = [ECScrollingPage page];
     page1.title = @"Hello world";
     page1.desc = sampleDescription1;
     page1.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title1"]];
     
-    EAIntroPage *page2 = [EAIntroPage page];
+    ECScrollingPage *page2 = [ECScrollingPage page];
     page2.title = @"This is page 2";
     page2.titlePositionY = self.view.bounds.size.height/2 - 10;
     page2.desc = sampleDescription2;
@@ -99,7 +99,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page2.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title2"]];
     page2.titleIconPositionY = 70;
     
-    EAIntroPage *page3 = [EAIntroPage page];
+    ECScrollingPage *page3 = [ECScrollingPage page];
     page3.title = @"This is page 3";
     page3.titleFont = [UIFont fontWithName:@"Georgia-BoldItalic" size:20];
     page3.titlePositionY = 220;
@@ -109,12 +109,12 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page3.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title3"]];
     page3.titleIconPositionY = 100;
     
-    EAIntroPage *page4 = [EAIntroPage page];
+    ECScrollingPage *page4 = [ECScrollingPage page];
     page4.title = @"This is page 4";
     page4.desc = sampleDescription4;
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
     intro.bgImage = [UIImage imageNamed:@"bg2"];
     
     intro.pageControlY = 250.0f;
@@ -133,7 +133,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
 }
 
 - (void)showIntroWithCustomView {
-    EAIntroPage *page1 = [EAIntroPage page];
+    ECScrollingPage *page1 = [ECScrollingPage page];
     page1.title = @"Hello world";
     page1.desc = sampleDescription1;
     page1.bgImage = [UIImage imageNamed:@"bg1"];
@@ -147,63 +147,63 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     labelForPage2.backgroundColor = [UIColor clearColor];
     labelForPage2.transform = CGAffineTransformMakeRotation(M_PI_2*3);
     [viewForPage2 addSubview:labelForPage2];
-    EAIntroPage *page2 = [EAIntroPage pageWithCustomView:viewForPage2];
+    ECScrollingPage *page2 = [ECScrollingPage pageWithCustomView:viewForPage2];
     page2.bgImage = [UIImage imageNamed:@"bg2"];
     
-    EAIntroPage *page3 = [EAIntroPage page];
+    ECScrollingPage *page3 = [ECScrollingPage page];
     page3.title = @"This is page 3";
     page3.desc = sampleDescription3;
     page3.bgImage = [UIImage imageNamed:@"bg3"];
     page3.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title3"]];
     
-    EAIntroPage *page4 = [EAIntroPage page];
+    ECScrollingPage *page4 = [ECScrollingPage page];
     page4.title = @"This is page 4";
     page4.desc = sampleDescription4;
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
     [intro setDelegate:self];
     
     [intro showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithCustomViewFromNib {
-    EAIntroPage *page1 = [EAIntroPage page];
+    ECScrollingPage *page1 = [ECScrollingPage page];
     page1.title = @"Hello world";
     page1.desc = sampleDescription1;
     page1.bgImage = [UIImage imageNamed:@"bg1"];
     page1.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title1"]];
     
-    EAIntroPage *page2 = [EAIntroPage pageWithCustomViewFromNibNamed:@"IntroPage"];
+    ECScrollingPage *page2 = [ECScrollingPage pageWithCustomViewFromNibNamed:@"IntroPage"];
     page2.bgImage = [UIImage imageNamed:@"bg2"];
     
-    EAIntroPage *page3 = [EAIntroPage page];
+    ECScrollingPage *page3 = [ECScrollingPage page];
     page3.title = @"This is page 3";
     page3.desc = sampleDescription3;
     page3.bgImage = [UIImage imageNamed:@"bg3"];
     page3.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title3"]];
     
-    EAIntroPage *page4 = [EAIntroPage page];
+    ECScrollingPage *page4 = [ECScrollingPage page];
     page4.title = @"This is page 4";
     page4.desc = sampleDescription4;
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
     [intro setDelegate:self];
     
     [intro showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithSeparatePagesInitAndPageCallback {
-    EAIntroPage *page1 = [EAIntroPage page];
+    ECScrollingPage *page1 = [ECScrollingPage page];
     page1.title = @"Hello world";
     page1.desc = sampleDescription1;
     page1.bgImage = [UIImage imageNamed:@"bg1"];
     page1.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title1"]];
     
-    EAIntroPage *page2 = [EAIntroPage page];
+    ECScrollingPage *page2 = [ECScrollingPage page];
     page2.title = @"This is page 2";
     page2.desc = sampleDescription2;
     page2.bgImage = [UIImage imageNamed:@"bg2"];
@@ -212,19 +212,19 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
         NSLog(@"Page 2 did appear block");
     };
     
-    EAIntroPage *page3 = [EAIntroPage page];
+    ECScrollingPage *page3 = [ECScrollingPage page];
     page3.title = @"This is page 3";
     page3.desc = sampleDescription3;
     page3.bgImage = [UIImage imageNamed:@"bg3"];
     page3.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title3"]];
     
-    EAIntroPage *page4 = [EAIntroPage page];
+    ECScrollingPage *page4 = [ECScrollingPage page];
     page4.title = @"This is page 4";
     page4.desc = sampleDescription4;
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds];
+    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds];
     [intro setDelegate:self];
     [intro setPages:@[page1,page2,page3,page4]];
     
@@ -232,7 +232,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
 }
 
 - (void)showCustomIntro {
-    EAIntroPage *page1 = [EAIntroPage page];
+    ECScrollingPage *page1 = [ECScrollingPage page];
     page1.title = @"Hello world";
     page1.titlePositionY = 240;
     page1.desc = sampleDescription1;
@@ -242,7 +242,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page1.titleIconPositionY = 100;
     page1.showTitleView = NO;
     
-    EAIntroPage *page2 = [EAIntroPage page];
+    ECScrollingPage *page2 = [ECScrollingPage page];
     page2.title = @"This is page 2";
     page2.titlePositionY = 240;
     page2.desc = sampleDescription2;
@@ -251,7 +251,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page2.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon1"]];
     page2.titleIconPositionY = 260;
     
-    EAIntroPage *page3 = [EAIntroPage page];
+    ECScrollingPage *page3 = [ECScrollingPage page];
     page3.title = @"This is page 3";
     page3.titlePositionY = 240;
     page3.desc = sampleDescription3;
@@ -260,7 +260,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page3.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon2"]];
     page3.titleIconPositionY = 260;
     
-    EAIntroPage *page4 = [EAIntroPage page];
+    ECScrollingPage *page4 = [ECScrollingPage page];
     page4.title = @"This is page 4";
     page4.titlePositionY = 240;
     page4.desc = sampleDescription4;
@@ -269,7 +269,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon3"]];
     page4.titleIconPositionY = 260;
     
-    EAIntroView *intro = [[EAIntroView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
     intro.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bigLogo"]];
     intro.titleViewY = 120;
     intro.tapToNext = YES;
@@ -290,7 +290,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     [intro showInView:rootView animateDuration:0.3];
 }
 
-- (void)introDidFinish:(EAIntroView *)introView {
+- (void)introDidFinish:(ECScrollingPageView *)introView {
     NSLog(@"introDidFinish callback");
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }

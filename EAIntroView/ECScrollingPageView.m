@@ -1,11 +1,11 @@
 //
-//  EAIntroView.m
+//  ECScrollingPageView.m
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
 
-#import "EAIntroView.h"
+#import "ECScrollingPageView.h"
 
-@interface EAIntroView()
+@interface ECScrollingPageView()
 
 @property (nonatomic, strong) UIImageView *bgImageView;
 @property (nonatomic, strong) UIImageView *pageBgBack;
@@ -15,14 +15,14 @@
 
 @end
 
-@interface EAIntroPage()
+@interface ECScrollingPage()
 
 @property(nonatomic, strong, readwrite) UIView *pageView;
 
 @end
 
 
-@implementation EAIntroView
+@implementation ECScrollingPageView
 
 #pragma mark - Init
 
@@ -87,14 +87,14 @@
 }
 
 - (UIView *)viewForPageIndex:(NSInteger)idx {
-    return ((EAIntroPage *)_pages[idx]).pageView;
+    return ((ECScrollingPage *)_pages[idx]).pageView;
 }
 
 - (BOOL)showTitleViewForPage:(NSInteger)idx {
     if(idx >= _pages.count || idx < 0)
         return NO;
     
-    return ((EAIntroPage *)_pages[idx]).showTitleView;
+    return ((ECScrollingPage *)_pages[idx]).showTitleView;
 }
 
 - (void)showPanelAtPageControl {
@@ -208,7 +208,7 @@
     
     CGFloat contentXIndex = 0;
     for (int idx = 0; idx < _pages.count; idx++) {
-        EAIntroPage *page = _pages[idx];
+        ECScrollingPage *page = _pages[idx];
         page.pageView = [self viewForPage:page atXIndex:&contentXIndex];
         [self.scrollView addSubview:page.pageView];
         if(page.onPageDidLoad) page.onPageDidLoad();
@@ -229,7 +229,7 @@
     self.pageBgFront.image = [self bgForPage:0];
 }
 
-- (UIView *)viewForPage:(EAIntroPage *)page atXIndex:(CGFloat *)xIndex {
+- (UIView *)viewForPage:(ECScrollingPage *)page atXIndex:(CGFloat *)xIndex {
     
     UIView *pageView = [[UIView alloc] initWithFrame:CGRectMake(*xIndex, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height)];
     
@@ -463,15 +463,15 @@ float easeOutValue(float value) {
     if(idx >= _pages.count || idx < 0)
         return nil;
     
-    return ((EAIntroPage *)_pages[idx]).bgImage;
+    return ((ECScrollingPage *)_pages[idx]).bgImage;
 }
 
 #pragma mark - Custom setters
 
 - (void)notifyDelegateWithPreviousPage:(NSInteger)previousPageIndex andCurrentPage:(NSInteger)currentPageIndex {
     if(currentPageIndex!=_currentPageIndex && currentPageIndex < _pages.count) {
-        EAIntroPage* previousPage = _pages[previousPageIndex];
-        EAIntroPage* currentPage = _pages[currentPageIndex];
+        ECScrollingPage* previousPage = _pages[previousPageIndex];
+        ECScrollingPage* currentPage = _pages[currentPageIndex];
         if(previousPage.onPageDidDisappear) previousPage.onPageDidDisappear();
         if(currentPage.onPageDidAppear) currentPage.onPageDidAppear();
         
@@ -654,7 +654,7 @@ float easeOutValue(float value) {
     [UIView animateWithDuration:duration animations:^{
         self.alpha = 1;
     } completion:^(BOOL finished) {
-        EAIntroPage* currentPage = _pages[self.currentPageIndex];
+        ECScrollingPage* currentPage = _pages[self.currentPageIndex];
         if(currentPage.onPageDidAppear) currentPage.onPageDidAppear();
         
         if ([(id)self.delegate respondsToSelector:@selector(intro:pageAppeared:withIndex:)]) {

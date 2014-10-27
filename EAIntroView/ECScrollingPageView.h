@@ -1,28 +1,28 @@
 //
-//  EAIntroView.h
+//  ECScrollingPageView.h
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
 
 #import <UIKit/UIKit.h>
-#import "EAIntroPage.h"
+#import "ECScrollingPage.h"
 
-enum EAIntroViewTags {
+enum ECScrollingPageViewTags {
     kTitleLabelTag = 1,
     kDescLabelTag,
     kTitleImageViewTag
 };
 
-@class EAIntroView;
+@class ECScrollingPageView;
 
 @protocol EAIntroDelegate
 @optional
-- (void)introDidFinish:(EAIntroView *)introView;
-- (void)intro:(EAIntroView *)introView pageAppeared:(EAIntroPage *)page withIndex:(NSInteger)pageIndex;
-- (void)intro:(EAIntroView *)introView pageStartScrolling:(EAIntroPage *)page withIndex:(NSInteger)pageIndex;
-- (void)intro:(EAIntroView *)introView pageEndScrolling:(EAIntroPage *)page withIndex:(NSInteger)pageIndex;
+- (void)introDidFinish:(ECScrollingPageView *)introView;
+- (void)intro:(ECScrollingPageView *)introView pageAppeared:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
+- (void)intro:(ECScrollingPageView *)introView pageStartScrolling:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
+- (void)intro:(ECScrollingPageView *)introView pageEndScrolling:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
 @end
 
-@interface EAIntroView : UIView <UIScrollViewDelegate>
+@interface ECScrollingPageView : UIView <UIScrollViewDelegate>
 
 @property (nonatomic, weak) id<EAIntroDelegate> delegate;
 
