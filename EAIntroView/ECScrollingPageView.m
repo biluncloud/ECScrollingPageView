@@ -10,6 +10,7 @@
 @property (nonatomic, strong) UIImageView *bgImageView;
 @property (nonatomic, strong) UIImageView *pageBgBack;
 @property (nonatomic, strong) UIImageView *pageBgFront;
+@property (nonatomic, strong) NSTimer *autoScrollingTimer;
 
 @property(nonatomic, strong) NSLayoutConstraint *pageControlYConstraint;
 
@@ -53,7 +54,10 @@
 #pragma mark - Private
 
 - (void)applyDefaultsToSelfDuringInitializationWithframe:(CGRect)frame pages:(NSArray *)pagesArray {
-    self.swipeToExit = YES;
+    self.autoScrolling = NO;
+    self.autoScrollingInterval = 3;
+    self.loop = YES;
+    self.swipeToExit = NO;
     self.easeOutCrossDisolves = YES;
     self.hideOffscreenPages = YES;
     self.titleViewY = 20.0f;
@@ -119,8 +123,8 @@
 }
 
 - (void)finishIntroductionAndRemoveSelf {
-	if ([(id)self.delegate respondsToSelector:@selector(introDidFinish:)]) {
-		[self.delegate introDidFinish:self];
+	if ([(id)self.delegate respondsToSelector:@selector(scrollingPageViewDidFinish:)]) {
+		[self.delegate scrollingPageViewDidFinish:self];
 	}
     
     //prevent last page flicker on disappearing
@@ -143,7 +147,7 @@
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-        _scrollView.accessibilityIdentifier = @"intro_scroll";
+        _scrollView.accessibilityIdentifier = @"scrolling_page_view_scroll";
         _scrollView.pagingEnabled = YES;
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
@@ -241,10 +245,10 @@
         return pageView;
     }
     
-    UIButton *tapToNextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    tapToNextButton.frame = pageView.bounds;
-    [tapToNextButton addTarget:self action:@selector(goToNext:) forControlEvents:UIControlEventTouchUpInside];
-    [pageView addSubview:tapToNextButton];
+    UIButton *tapButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    tapButton.frame = pageView.bounds;
+    [tapButton addTarget:self action:@selector(pageTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [pageView addSubview:tapButton];
     
     if(page.titleIconView) {
         UIView *titleImageView = page.titleIconView;
@@ -314,7 +318,7 @@
         }
     }
     
-    pageView.accessibilityLabel = [NSString stringWithFormat:@"intro_page_%lu",(unsigned long)[self.pages indexOfObject:page]];
+    pageView.accessibilityLabel = [NSString stringWithFormat:@"scrolling_page_view_%lu",(unsigned long)[self.pages indexOfObject:page]];
     
     return pageView;
 }
@@ -368,15 +372,17 @@
 
 #pragma mark - UIScrollView Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-    if ([(id)self.delegate respondsToSelector:@selector(intro:pageStartScrolling:withIndex:)] && self.currentPageIndex < [self.pages count]) {
-        [self.delegate intro:self pageStartScrolling:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+    if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageStartScrolling:withIndex:)] && self.currentPageIndex < [self.pages count]) {
+        [self.delegate scrollingPageView:self pageStartScrolling:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
     }
+    
+    [self disableAutoScroll];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self checkIndexForScrollView:scrollView];
-    if ([(id)self.delegate respondsToSelector:@selector(intro:pageEndScrolling:withIndex:)] && self.currentPageIndex < [self.pages count]) {
-        [self.delegate intro:self pageEndScrolling:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+    if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageEndScrolling:withIndex:)] && self.currentPageIndex < [self.pages count]) {
+        [self.delegate scrollingPageView:self pageEndScrolling:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
     }
 }
 
@@ -401,6 +407,8 @@
         
         [self makePanelVisibleAtIndex:self.visiblePageIndex];
     }
+    
+    [self enableAutoScroll];
 }
 
 float easeOutValue(float value) {
@@ -475,8 +483,8 @@ float easeOutValue(float value) {
         if(previousPage.onPageDidDisappear) previousPage.onPageDidDisappear();
         if(currentPage.onPageDidAppear) currentPage.onPageDidAppear();
         
-        if ([(id)self.delegate respondsToSelector:@selector(intro:pageAppeared:withIndex:)]) {
-            [self.delegate intro:self pageAppeared:_pages[currentPageIndex] withIndex:currentPageIndex];
+        if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageAppeared:withIndex:)]) {
+            [self.delegate scrollingPageView:self pageAppeared:_pages[currentPageIndex] withIndex:currentPageIndex];
         }
     }
 }
@@ -501,6 +509,18 @@ float easeOutValue(float value) {
     self.pageBgFront.contentMode = bgViewContentMode;
 }
 
+-(void)setAutoScrolling:(bool)autoScrolling {
+    _autoScrolling = autoScrolling;
+    if (autoScrolling) {
+        [self enableAutoScroll];
+    }
+}
+
+- (void)setLoop:(bool)loop {
+    _loop = loop;
+    if (loop) _swipeToExit = NO;
+}
+
 - (void)setSwipeToExit:(bool)swipeToExit {
     if (swipeToExit != _swipeToExit) {
         CGFloat contentXIndex = self.scrollView.contentSize.width;
@@ -512,6 +532,7 @@ float easeOutValue(float value) {
         self.scrollView.contentSize = CGSizeMake(contentXIndex, self.scrollView.frame.size.height);
     }
     _swipeToExit = swipeToExit;
+    if (swipeToExit) _loop = NO;
 }
 
 - (void)setTitleView:(UIView *)titleView {
@@ -657,8 +678,8 @@ float easeOutValue(float value) {
         ECScrollingPage* currentPage = _pages[self.currentPageIndex];
         if(currentPage.onPageDidAppear) currentPage.onPageDidAppear();
         
-        if ([(id)self.delegate respondsToSelector:@selector(intro:pageAppeared:withIndex:)]) {
-            [self.delegate intro:self pageAppeared:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+        if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageAppeared:withIndex:)]) {
+            [self.delegate scrollingPageView:self pageAppeared:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
         }
     }];
 }
@@ -686,8 +707,14 @@ float easeOutValue(float value) {
     [self.scrollView scrollRectToVisible:pageRect animated:animated];
 }
 
-- (IBAction)goToNext:(id)sender {
-    if(!self.tapToNext) {
+- (IBAction)pageTapped:(id)sender {
+    // The tapped method is delegated
+    if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageTapped:withIndex:)]) {
+        [self.delegate scrollingPageView:self pageTapped:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+        return;
+    }
+    
+    if(!self.tapToNext && !self.autoScrolling) { //TODO: remove timer when exit
         return;
     }
     if(self.currentPageIndex + 1 >= [self.pages count]) {
@@ -695,6 +722,21 @@ float easeOutValue(float value) {
     } else {
         [self setCurrentPageIndex:self.currentPageIndex + 1 animated:YES];
     }
+}
+
+#pragma mark - Timer
+
+- (void)enableAutoScroll {
+    self.autoScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollingInterval
+                                                               target:self
+                                                             selector:@selector(pageTapped:)
+                                                             userInfo:nil
+                                                              repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:self.autoScrollingTimer forMode:NSRunLoopCommonModes];
+}
+
+- (void)disableAutoScroll {
+    [self.autoScrollingTimer invalidate];
 }
 
 @end

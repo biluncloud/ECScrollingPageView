@@ -11,7 +11,7 @@ typedef void (^VoidBlock)();
 
 // background used for cross-dissolve
 @property (nonatomic, strong) UIImage *bgImage;
-// show or hide EAIntroView titleView on this page (default YES)
+// show or hide ECScrollingPageView titleView on this page (default YES)
 @property (nonatomic, assign) bool showTitleView;
 
 

@@ -14,20 +14,24 @@ enum ECScrollingPageViewTags {
 
 @class ECScrollingPageView;
 
-@protocol EAIntroDelegate
+@protocol ECScrollingDelegate
 @optional
-- (void)introDidFinish:(ECScrollingPageView *)introView;
-- (void)intro:(ECScrollingPageView *)introView pageAppeared:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
-- (void)intro:(ECScrollingPageView *)introView pageStartScrolling:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
-- (void)intro:(ECScrollingPageView *)introView pageEndScrolling:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
+- (void)scrollingPageViewDidFinish:(ECScrollingPageView *)scrollingPageView;
+- (void)scrollingPageView:(ECScrollingPageView *)scrollingPageView pageAppeared:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
+- (void)scrollingPageView:(ECScrollingPageView *)scrollingPageView pageStartScrolling:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
+- (void)scrollingPageView:(ECScrollingPageView *)scrollingPageView pageEndScrolling:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
+- (void)scrollingPageView:(ECScrollingPageView *)scrollingPageView pageTapped:(ECScrollingPage *)page withIndex:(NSInteger)pageIndex;
 @end
 
 @interface ECScrollingPageView : UIView <UIScrollViewDelegate>
 
-@property (nonatomic, weak) id<EAIntroDelegate> delegate;
+@property (nonatomic, weak) id<ECScrollingDelegate> delegate;
 
 // titleView Y position - from top of the screen
 // pageControl Y position - from bottom of the screen
+@property (nonatomic, assign) bool autoScrolling;
+@property (nonatomic, assign) NSInteger autoScrollingInterval;
+@property (nonatomic, assign) bool loop;    // conflict with swipeToExit, if the latter is set to YES, then loop must be NO
 @property (nonatomic, assign) bool swipeToExit;
 @property (nonatomic, assign) bool tapToNext;
 @property (nonatomic, assign) bool hideOffscreenPages;

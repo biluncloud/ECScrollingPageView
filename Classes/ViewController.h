@@ -6,6 +6,6 @@
 #import <UIKit/UIKit.h>
 #import "ECScrollingPageView.h"
 
-@interface ViewController : UITableViewController <EAIntroDelegate>
+@interface ViewController : UITableViewController <ECScrollingDelegate>
 
 @end

@@ -52,10 +52,15 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
-    [intro setDelegate:self];
+    ECScrollingPageView *scrollingPageView = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    [scrollingPageView setDelegate:self];
     
-    [intro showInView:rootView animateDuration:0.3];
+    // ---
+    scrollingPageView.autoScrolling = YES;
+    scrollingPageView.swipeToExit = NO;
+    // ---
+    
+    [scrollingPageView showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithFixedTitleView {
@@ -75,14 +80,14 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.title = @"This is page 4";
     page4.desc = sampleDescription4;
     
-    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
-    [intro setDelegate:self];
+    ECScrollingPageView *scrollingPageView = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    [scrollingPageView setDelegate:self];
     UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title1"]];
-    intro.titleView = titleView;
-    intro.titleViewY = 90;
-    intro.backgroundColor = [UIColor colorWithRed:0.0f green:0.49f blue:0.96f alpha:1.0f]; //iOS7 dark blue
+    scrollingPageView.titleView = titleView;
+    scrollingPageView.titleViewY = 90;
+    scrollingPageView.backgroundColor = [UIColor colorWithRed:0.0f green:0.49f blue:0.96f alpha:1.0f]; //iOS7 dark blue
 
-    [intro showInView:rootView animateDuration:0.3];
+    [scrollingPageView showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithCustomPages {
@@ -114,10 +119,10 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.desc = sampleDescription4;
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
-    intro.bgImage = [UIImage imageNamed:@"bg2"];
+    ECScrollingPageView *scrollingPageView = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    scrollingPageView.bgImage = [UIImage imageNamed:@"bg2"];
     
-    intro.pageControlY = 250.0f;
+    scrollingPageView.pageControlY = 250.0f;
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [btn setFrame:CGRectMake((320-230)/2, [UIScreen mainScreen].bounds.size.height - 60, 230, 40)];
@@ -126,10 +131,10 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     btn.layer.borderWidth = 2.0f;
     btn.layer.cornerRadius = 10;
     btn.layer.borderColor = [[UIColor whiteColor] CGColor];
-    intro.skipButton = btn;
+    scrollingPageView.skipButton = btn;
     
-    [intro setDelegate:self];
-    [intro showInView:rootView animateDuration:0.3];
+    [scrollingPageView setDelegate:self];
+    [scrollingPageView showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithCustomView {
@@ -162,10 +167,10 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
-    [intro setDelegate:self];
+    ECScrollingPageView *scrollingPageView = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    [scrollingPageView setDelegate:self];
     
-    [intro showInView:rootView animateDuration:0.3];
+    [scrollingPageView showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithCustomViewFromNib {
@@ -190,10 +195,10 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
-    [intro setDelegate:self];
+    ECScrollingPageView *scrollingPageView = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    [scrollingPageView setDelegate:self];
     
-    [intro showInView:rootView animateDuration:0.3];
+    [scrollingPageView showInView:rootView animateDuration:0.3];
 }
 
 - (void)showIntroWithSeparatePagesInitAndPageCallback {
@@ -224,11 +229,11 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.bgImage = [UIImage imageNamed:@"bg4"];
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title4"]];
     
-    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds];
-    [intro setDelegate:self];
-    [intro setPages:@[page1,page2,page3,page4]];
+    ECScrollingPageView *scrollingPageView = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds];
+    [scrollingPageView setDelegate:self];
+    [scrollingPageView setPages:@[page1,page2,page3,page4]];
     
-    [intro showInView:rootView animateDuration:0.3];
+    [scrollingPageView showInView:rootView animateDuration:0.3];
 }
 
 - (void)showCustomIntro {
@@ -269,29 +274,29 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     page4.titleIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon3"]];
     page4.titleIconPositionY = 260;
     
-    ECScrollingPageView *intro = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
-    intro.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bigLogo"]];
-    intro.titleViewY = 120;
-    intro.tapToNext = YES;
-    [intro setDelegate:self];
+    ECScrollingPageView *scrollingPageView = [[ECScrollingPageView alloc] initWithFrame:rootView.bounds andPages:@[page1,page2,page3,page4]];
+    scrollingPageView.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bigLogo"]];
+    scrollingPageView.titleViewY = 120;
+    scrollingPageView.tapToNext = YES;
+    [scrollingPageView setDelegate:self];
     
     SMPageControl *pageControl = [[SMPageControl alloc] init];
     pageControl.pageIndicatorImage = [UIImage imageNamed:@"pageDot"];
     pageControl.currentPageIndicatorImage = [UIImage imageNamed:@"selectedPageDot"];
     [pageControl sizeToFit];
-    intro.pageControl = (UIPageControl *)pageControl;
-    intro.pageControlY = 130.0f;
+    scrollingPageView.pageControl = (UIPageControl *)pageControl;
+    scrollingPageView.pageControlY = 130.0f;
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn setBackgroundImage:[UIImage imageNamed:@"skipButton"] forState:UIControlStateNormal];
     [btn setFrame:CGRectMake((320-270)/2, [UIScreen mainScreen].bounds.size.height - 80, 270, 50)];
-    intro.skipButton = btn;
+    scrollingPageView.skipButton = btn;
     
-    [intro showInView:rootView animateDuration:0.3];
+    [scrollingPageView showInView:rootView animateDuration:0.3];
 }
 
-- (void)introDidFinish:(ECScrollingPageView *)introView {
-    NSLog(@"introDidFinish callback");
+- (void)scrollingPageViewDidFinish:(ECScrollingPageView *)scrollingPageView {
+    NSLog(@"scrollingPageViewDidFinish callback");
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
@@ -300,7 +305,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
         // all settings are basic, pages with custom packgrounds, title image on each page
         [self showIntroWithCrossDissolve];
     } else if (indexPath.row == 1) {
-        // all settings are basic, introview with colored background, fixed title image
+        // all settings are basic, scrollingPageView with colored background, fixed title image
         [self showIntroWithFixedTitleView];
     } else if (indexPath.row == 2) {
         // basic pages with custom settings
@@ -315,7 +320,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
         // pages separate init and using block callback in one of pages
         [self showIntroWithSeparatePagesInitAndPageCallback];
     } else if (indexPath.row == 6) {
-        // show custom intro
+        // show custom scrollingPageView 
         [self showCustomIntro];
     }
 }
