@@ -12,6 +12,12 @@ enum ECScrollingPageViewTags {
     kTitleImageViewTag
 };
 
+enum ECSlideShowMode {
+    kScrollingImageMode,    // for scrolling images, e.g., ADs
+    kIntroductionMode,      // for introduction page which appears in the first launch
+    kCustomMode
+};
+
 @class ECScrollingPageView;
 
 @protocol ECScrollingDelegate
@@ -29,6 +35,7 @@ enum ECScrollingPageViewTags {
 
 // titleView Y position - from top of the screen
 // pageControl Y position - from bottom of the screen
+@property (nonatomic, assign) ECSlideShowMode mode;
 @property (nonatomic, assign) bool autoScrolling;
 @property (nonatomic, assign) NSInteger autoScrollingInterval;
 @property (nonatomic, assign) bool loop;    // conflict with swipeToExit, if the latter is set to YES, then loop must be NO

@@ -54,6 +54,7 @@
 #pragma mark - Private
 
 - (void)applyDefaultsToSelfDuringInitializationWithframe:(CGRect)frame pages:(NSArray *)pagesArray {
+    self.showMode = kScrollingImageMode;
     self.autoScrolling = NO;
     self.autoScrollingInterval = 3;
     self.loop = YES;
@@ -508,6 +509,19 @@ float easeOutValue(float value) {
     self.bgImageView.contentMode = bgViewContentMode;
     self.pageBgBack.contentMode = bgViewContentMode;
     self.pageBgFront.contentMode = bgViewContentMode;
+}
+
+-(void)setShowMode:(ECSlideShowMode)showMode {
+    _showMode = showMode;
+    switch (showMode) {
+    case kScrollingImageMode:
+        break;
+    case kIntroductionMode:
+        break;
+    case kCustomMode:
+     default:
+        break;
+    }
 }
 
 -(void)setAutoScrolling:(bool)autoScrolling {
