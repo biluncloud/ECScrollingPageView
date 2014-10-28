@@ -10,19 +10,19 @@ typedef enum {
     kTitleLabelTag = 1,
     kDescLabelTag,
     kTitleImageViewTag
-}ECSliderPlayerTags;
+} ECSliderPlayerTags;
 
 typedef enum {
-    kScrollingImageMode,    // for scrolling images, e.g., ADs
-    kIntroductionMode,      // for introduction page which appears in the first launch
-    kCustomMode
-}ECSlidePlayerMode;
+    kSlidePlayerModeScrollImage,    // for scrolling images, e.g., ADs
+    kSlidePlayerModeIntroduction,   // for introduction page which appears in the first launch
+    kSlidePlayerModeCustom
+} ECSlidePlayerMode;
 
 typedef enum {
-    kLoop,                  // when slide reaches the last(first), the next(previous) would be first(last) again
-    kSwipeToExit,           // when slide reaches the last, another swipe would exit slide show
-    kBounce                 // bounce when user wants to swipe to the slide out of boundary
-}ECSlidePlayerBorderBehavior;
+    kSliderPlayerBorderBehaviorLoop,        // when slide reaches the last(first), the next(previous) would be first(last) again
+    kSliderPlayerBorderBehaviorSwipeToExit, // when slide reaches the last, another swipe would exit slide show
+    kSliderPlayerBorderBehaviorBounce       // bounce when user wants to swipe to the slide out of boundary
+} ECSlidePlayerBorderBehavior;
 
 @class ECSlidePlayer;
 

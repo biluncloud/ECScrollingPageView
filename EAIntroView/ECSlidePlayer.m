@@ -57,8 +57,8 @@
     self.autoScrolling = NO;
     self.autoScrollingInterval = 3;
     self.tapToNext = NO;
-    self.borderBehavior = kBounce;
-    self.showMode = kScrollingImageMode;
+    self.borderBehavior = kSliderPlayerBorderBehaviorBounce;
+    self.showMode = kSlidePlayerModeScrollImage;
     self.easeOutCrossDisolves = YES;
     self.hideOffscreenSlides = YES;
     self.titleViewY = 20.0f;
@@ -222,7 +222,7 @@
     
     [self makePanelVisibleAtIndex:0];
     
-    if (self.borderBehavior == kSwipeToExit) {
+    if (self.borderBehavior == kSliderPlayerBorderBehaviorSwipeToExit) {
         [self appendCloseViewAtXIndex:&contentXIndex];
     }
     
@@ -397,7 +397,7 @@
     float offset = scrollView.contentOffset.x / self.scrollView.frame.size.width;
     NSInteger slide = (NSInteger)(offset);
     
-    if (slide == (_slides.count - 1) && self.borderBehavior == kSwipeToExit) {
+    if (slide == (_slides.count - 1) && self.borderBehavior == kSliderPlayerBorderBehaviorSwipeToExit) {
         self.alpha = ((self.scrollView.frame.size.width*_slides.count)-self.scrollView.contentOffset.x)/self.scrollView.frame.size.width;
     } else {
         [self crossDissolveForOffset:offset];
@@ -521,11 +521,11 @@ float easeOutValue(float value) {
     if (borderBehavior != _borderBehavior) {
         CGFloat contentXIndex = self.scrollView.contentSize.width;
         switch (borderBehavior) {
-            case kSwipeToExit:
+            case kSliderPlayerBorderBehaviorSwipeToExit:
                 [self appendCloseViewAtXIndex:&contentXIndex];
                 break;
-            case kLoop:     // no break for this case because it has to remove close view too
-            case kBounce:
+            case kSliderPlayerBorderBehaviorLoop:     // no break for this case because it has to remove close view too
+            case kSliderPlayerBorderBehaviorBounce:
             default:
                 [self removeCloseViewAtXIndex:&contentXIndex];
                 break;
@@ -538,17 +538,17 @@ float easeOutValue(float value) {
 -(void)setShowMode:(ECSlidePlayerMode)showMode {
     _showMode = showMode;
     switch (showMode) {
-    case kScrollingImageMode:
-        self.borderBehavior = kLoop;
+    case kSlidePlayerModeScrollImage:
+        self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
         self.autoScrolling = YES;
         break;
-    case kIntroductionMode:
-        self.borderBehavior = kSwipeToExit;
+    case kSlidePlayerModeIntroduction:
+        self.borderBehavior = kSliderPlayerBorderBehaviorSwipeToExit;
         self.autoScrolling = NO;
         break;
-    case kCustomMode:
+    case kSlidePlayerModeCustom:
     default:
-        self.borderBehavior = kBounce;
+        self.borderBehavior = kSliderPlayerBorderBehaviorBounce;
         self.autoScrolling = NO;
         break;
     }

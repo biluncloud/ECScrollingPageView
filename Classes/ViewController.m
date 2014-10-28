@@ -54,7 +54,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     
     ECSlidePlayer *slidePlayer = [[ECSlidePlayer alloc] initWithFrame:rootView.bounds andSlides:@[slide1,slide2,slide3,slide4]];
     [slidePlayer setDelegate:self];
-    slidePlayer.showMode = kIntroductionMode;
+    slidePlayer.showMode = kSlidePlayerModeIntroduction;
     
     [slidePlayer showInView:rootView animateDuration:0.3];
 }
