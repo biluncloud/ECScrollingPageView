@@ -18,6 +18,12 @@ enum ECSlideShowMode {
     kCustomMode
 };
 
+enum ECSlideShowReachBorderBehavior {
+    kLoop,                  // when slide reaches the last(first), the next(previous) would be first(last) again
+    kSwipeToExit,           // when slide reaches the last, another swipe would exit slide show
+    kBounce                 // bounce when user wants to swipe to the slide out of boundary
+};
+
 @class ECScrollingPageView;
 
 @protocol ECScrollingDelegate
@@ -33,14 +39,13 @@ enum ECSlideShowMode {
 
 @property (nonatomic, weak) id<ECScrollingDelegate> delegate;
 
-// titleView Y position - from top of the screen
-// pageControl Y position - from bottom of the screen
-@property (nonatomic, assign) ECSlideShowMode mode;
+// these properties are conflict
 @property (nonatomic, assign) bool autoScrolling;
 @property (nonatomic, assign) NSInteger autoScrollingInterval;
-@property (nonatomic, assign) bool loop;    // conflict with swipeToExit, if the latter is set to YES, then loop must be NO
-@property (nonatomic, assign) bool swipeToExit;
 @property (nonatomic, assign) bool tapToNext;
+@property (nonatomic, assign) ECSlideShowReachBorderBehavior borderBehavior;
+@property (nonatomic, assign) ECSlideShowMode showMode;
+
 @property (nonatomic, assign) bool hideOffscreenPages;
 @property (nonatomic, assign) bool easeOutCrossDisolves;
 @property (nonatomic, assign) bool showSkipButtonOnlyOnLastPage;
@@ -48,6 +53,9 @@ enum ECSlideShowMode {
 @property (nonatomic, assign) CGFloat motionEffectsRelativeValue;
 @property (nonatomic, strong) UIImage *bgImage;
 @property (nonatomic, assign) UIViewContentMode bgViewContentMode;
+
+// titleView Y position - from top of the screen
+// pageControl Y position - from bottom of the screen
 @property (nonatomic, strong) UIView *titleView;
 @property (nonatomic, assign) CGFloat titleViewY;
 @property (nonatomic, strong) UIPageControl *pageControl;

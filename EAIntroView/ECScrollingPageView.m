@@ -54,11 +54,10 @@
 #pragma mark - Private
 
 - (void)applyDefaultsToSelfDuringInitializationWithframe:(CGRect)frame pages:(NSArray *)pagesArray {
-    self.showMode = kScrollingImageMode;
     self.autoScrolling = NO;
     self.autoScrollingInterval = 3;
-    self.loop = YES;
-    self.swipeToExit = NO;
+    self.borderBehavior = kBounce;
+    self.showMode = kScrollingImageMode;
     self.easeOutCrossDisolves = YES;
     self.hideOffscreenPages = YES;
     self.titleViewY = 20.0f;
@@ -222,7 +221,7 @@
     
     [self makePanelVisibleAtIndex:0];
     
-    if (self.swipeToExit) {
+    if (self.borderBehavior == kSwipeToExit) {
         [self appendCloseViewAtXIndex:&contentXIndex];
     }
     
@@ -398,7 +397,7 @@
     float offset = scrollView.contentOffset.x / self.scrollView.frame.size.width;
     NSInteger page = (NSInteger)(offset);
     
-    if (page == (_pages.count - 1) && self.swipeToExit) {
+    if (page == (_pages.count - 1) && self.borderBehavior == kSwipeToExit) {
         self.alpha = ((self.scrollView.frame.size.width*_pages.count)-self.scrollView.contentOffset.x)/self.scrollView.frame.size.width;
     } else {
         [self crossDissolveForOffset:offset];
@@ -511,19 +510,6 @@ float easeOutValue(float value) {
     self.pageBgFront.contentMode = bgViewContentMode;
 }
 
--(void)setShowMode:(ECSlideShowMode)showMode {
-    _showMode = showMode;
-    switch (showMode) {
-    case kScrollingImageMode:
-        break;
-    case kIntroductionMode:
-        break;
-    case kCustomMode:
-     default:
-        break;
-    }
-}
-
 -(void)setAutoScrolling:(bool)autoScrolling {
     _autoScrolling = autoScrolling;
     if (autoScrolling) {
@@ -531,23 +517,41 @@ float easeOutValue(float value) {
     }
 }
 
-- (void)setLoop:(bool)loop {
-    _loop = loop;
-    if (loop) _swipeToExit = NO;
-}
-
-- (void)setSwipeToExit:(bool)swipeToExit {
-    if (swipeToExit != _swipeToExit) {
+- (void)setBorderBehavior:(ECSlideShowReachBorderBehavior)borderBehavior {
+    if (borderBehavior != _borderBehavior) {
         CGFloat contentXIndex = self.scrollView.contentSize.width;
-        if(swipeToExit) {
-            [self appendCloseViewAtXIndex:&contentXIndex];
-        } else {
-            [self removeCloseViewAtXIndex:&contentXIndex];
+        switch (borderBehavior) {
+            case kSwipeToExit:
+                [self appendCloseViewAtXIndex:&contentXIndex];
+                break;
+            case kLoop:     // no break for this case because it has to remove close view too
+            case kBounce:
+             default:
+                [self removeCloseViewAtXIndex:&contentXIndex];
+                break;
         }
         self.scrollView.contentSize = CGSizeMake(contentXIndex, self.scrollView.frame.size.height);
     }
-    _swipeToExit = swipeToExit;
-    if (swipeToExit) _loop = NO;
+    _borderBehavior = borderBehavior;
+}
+
+-(void)setShowMode:(ECSlideShowMode)showMode {
+    _showMode = showMode;
+    switch (showMode) {
+    case kScrollingImageMode:
+        self.borderBehavior = kLoop;
+        self.autoScrolling = YES;
+        break;
+    case kIntroductionMode:
+        self.borderBehavior = kSwipeToExit;
+        self.autoScrolling = NO;
+        break;
+    case kCustomMode:
+     default:
+        self.borderBehavior = kBounce;
+        self.autoScrolling = NO;
+        break;
+    }
 }
 
 - (void)setTitleView:(UIView *)titleView {
