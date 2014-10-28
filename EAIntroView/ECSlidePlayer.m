@@ -1,36 +1,36 @@
 //
-//  ECScrollingPageView.m
+//  ECSlidePlayer.m
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
 
-#import "ECScrollingPageView.h"
+#import "ECSlidePlayer.h"
 
-@interface ECScrollingPageView()
+@interface ECSlidePlayer()
 
 @property (nonatomic, strong) UIImageView *bgImageView;
-@property (nonatomic, strong) UIImageView *pageBgBack;
-@property (nonatomic, strong) UIImageView *pageBgFront;
+@property (nonatomic, strong) UIImageView *slideBgBack;
+@property (nonatomic, strong) UIImageView *slideBgFront;
 @property (nonatomic, strong) NSTimer *autoScrollingTimer;
 
 @property(nonatomic, strong) NSLayoutConstraint *pageControlYConstraint;
 
 @end
 
-@interface ECScrollingPage()
+@interface ECSlide()
 
-@property(nonatomic, strong, readwrite) UIView *pageView;
+@property(nonatomic, strong, readwrite) UIView *slideView;
 
 @end
 
 
-@implementation ECScrollingPageView
+@implementation ECSlidePlayer
 
 #pragma mark - Init
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self applyDefaultsToSelfDuringInitializationWithframe:frame pages:nil];
+        [self applyDefaultsToSelfDuringInitializationWithframe:frame slides:nil];
     }
     return self;
 }
@@ -38,33 +38,34 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self applyDefaultsToSelfDuringInitializationWithframe:self.frame pages:nil];
+        [self applyDefaultsToSelfDuringInitializationWithframe:self.frame slides:nil];
     }
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame andPages:(NSArray *)pagesArray {
+- (id)initWithFrame:(CGRect)frame andSlides:(NSArray *)slidesArray {
     self = [super initWithFrame:frame];
     if (self) {
-        [self applyDefaultsToSelfDuringInitializationWithframe:self.frame pages:pagesArray];
+        [self applyDefaultsToSelfDuringInitializationWithframe:self.frame slides:slidesArray];
     }
     return self;
 }
 
 #pragma mark - Private
 
-- (void)applyDefaultsToSelfDuringInitializationWithframe:(CGRect)frame pages:(NSArray *)pagesArray {
+- (void)applyDefaultsToSelfDuringInitializationWithframe:(CGRect)frame slides:(NSArray *)slidesArray {
     self.autoScrolling = NO;
     self.autoScrollingInterval = 3;
+    self.tapToNext = NO;
     self.borderBehavior = kBounce;
     self.showMode = kScrollingImageMode;
     self.easeOutCrossDisolves = YES;
-    self.hideOffscreenPages = YES;
+    self.hideOffscreenSlides = YES;
     self.titleViewY = 20.0f;
     self.pageControlY = 60.0f;
     self.bgViewContentMode = UIViewContentModeScaleAspectFill;
     self.motionEffectsRelativeValue = 40.0f;
-    _pages = [pagesArray copy];
+    _slides = [slidesArray copy];
     [self buildUI];
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
@@ -78,56 +79,56 @@
 
 - (void)makePanelVisibleAtIndex:(NSInteger)panelIndex{
     [UIView animateWithDuration:0.3 animations:^{
-        for (int idx = 0; idx < _pages.count; idx++) {
+        for (int idx = 0; idx < _slides.count; idx++) {
             if (idx == panelIndex) {
-                [[self viewForPageIndex:idx] setAlpha:1];
+                [[self viewForSlideIndex:idx] setAlpha:1];
             } else {
-                if(!self.hideOffscreenPages) {
-                    [[self viewForPageIndex:idx] setAlpha:0];
+                if(!self.hideOffscreenSlides) {
+                    [[self viewForSlideIndex:idx] setAlpha:0];
                 }
             }
         }
     }];
 }
 
-- (UIView *)viewForPageIndex:(NSInteger)idx {
-    return ((ECScrollingPage *)_pages[idx]).pageView;
+- (UIView *)viewForSlideIndex:(NSInteger)idx {
+    return ((ECSlide *)_slides[idx]).slideView;
 }
 
-- (BOOL)showTitleViewForPage:(NSInteger)idx {
-    if(idx >= _pages.count || idx < 0)
+- (BOOL)showTitleViewForSlide:(NSInteger)idx {
+    if(idx >= _slides.count || idx < 0)
         return NO;
     
-    return ((ECScrollingPage *)_pages[idx]).showTitleView;
+    return ((ECSlide *)_slides[idx]).showTitleView;
 }
 
 - (void)showPanelAtPageControl {
-    [self makePanelVisibleAtIndex:self.currentPageIndex];
+    [self makePanelVisibleAtIndex:self.currentSlideIndex];
     
-    [self setCurrentPageIndex:self.pageControl.currentPage animated:YES];
+    [self setCurrentSlideIndex:self.pageControl.currentPage animated:YES];
 }
 
 - (void)checkIndexForScrollView:(UIScrollView *)scrollView {
-    NSInteger newPageIndex = (scrollView.contentOffset.x + scrollView.bounds.size.width/2)/self.scrollView.frame.size.width;
-    [self notifyDelegateWithPreviousPage:self.currentPageIndex andCurrentPage:newPageIndex];
-    _currentPageIndex = newPageIndex;
+    NSInteger newSlideIndex = (scrollView.contentOffset.x + scrollView.bounds.size.width/2)/self.scrollView.frame.size.width;
+    [self notifyDelegateWithPreviousSlide:self.currentSlideIndex andCurrentSlide:newSlideIndex];
+    _currentSlideIndex = newSlideIndex;
     
-    if (self.currentPageIndex == (_pages.count)) {
+    if (self.currentSlideIndex == (_slides.count)) {
         
-        //if run here, it means you can't  call _pages[self.currentPageIndex],
+        //if run here, it means you can't  call _slides[self.currentSlideIndex],
         //to be safe, set to the biggest index
-        _currentPageIndex = _pages.count - 1;
+        _currentSlideIndex = _slides.count - 1;
         
         [self finishIntroductionAndRemoveSelf];
     }
 }
 
 - (void)finishIntroductionAndRemoveSelf {
-	if ([(id)self.delegate respondsToSelector:@selector(scrollingPageViewDidFinish:)]) {
-		[self.delegate scrollingPageViewDidFinish:self];
+	if ([(id)self.delegate respondsToSelector:@selector(slidePlayerDidFinish:)]) {
+		[self.delegate slidePlayerDidFinish:self];
 	}
     
-    //prevent last page flicker on disappearing
+    //prevent last slide flicker on disappearing
     self.alpha = 0;
     [self disableAutoScroll];
     
@@ -148,7 +149,7 @@
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-        _scrollView.accessibilityIdentifier = @"scrolling_page_view_scroll";
+        _scrollView.accessibilityIdentifier = @"slide_player_scroll";
         _scrollView.pagingEnabled = YES;
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
@@ -166,22 +167,22 @@
     return _bgImageView;
 }
 
-- (UIImageView *)pageBgBack {
-    if (!_pageBgBack) {
-        _pageBgBack = [[UIImageView alloc] initWithFrame:self.frame];
-        [self applyDefaultsToBackgroundImageView:_pageBgBack];
-        _pageBgBack.alpha = 0;
+- (UIImageView *)slideBgBack {
+    if (!_slideBgBack) {
+        _slideBgBack = [[UIImageView alloc] initWithFrame:self.frame];
+        [self applyDefaultsToBackgroundImageView:_slideBgBack];
+        _slideBgBack.alpha = 0;
     }
-    return _pageBgBack;
+    return _slideBgBack;
 }
 
-- (UIImageView *)pageBgFront {
-    if (!_pageBgFront) {
-        _pageBgFront = [[UIImageView alloc] initWithFrame:self.frame];
-        [self applyDefaultsToBackgroundImageView:_pageBgFront];
-        _pageBgFront.alpha = 0;
+- (UIImageView *)slideBgFront {
+    if (!_slideBgFront) {
+        _slideBgFront = [[UIImageView alloc] initWithFrame:self.frame];
+        [self applyDefaultsToBackgroundImageView:_slideBgFront];
+        _slideBgFront.alpha = 0;
     }
-    return _pageBgFront;
+    return _slideBgFront;
 }
 
 #pragma mark - UI building
@@ -201,8 +202,8 @@
 
 - (void)buildBackgroundImage {
     [self addSubview:self.bgImageView];
-    [self addSubview:self.pageBgBack];
-    [self addSubview:self.pageBgFront];
+    [self addSubview:self.slideBgBack];
+    [self addSubview:self.slideBgFront];
     
     if (self.useMotionEffects) {
         [self addMotionEffectsOnBg];
@@ -212,11 +213,11 @@
 - (void)buildScrollView {
     
     CGFloat contentXIndex = 0;
-    for (int idx = 0; idx < _pages.count; idx++) {
-        ECScrollingPage *page = _pages[idx];
-        page.pageView = [self viewForPage:page atXIndex:&contentXIndex];
-        [self.scrollView addSubview:page.pageView];
-        if(page.onPageDidLoad) page.onPageDidLoad();
+    for (int idx = 0; idx < _slides.count; idx++) {
+        ECSlide *slide = _slides[idx];
+        slide.slideView = [self viewForSlide:slide atXIndex:&contentXIndex];
+        [self.scrollView addSubview:slide.slideView];
+        if(slide.onSlideDidLoad) slide.onSlideDidLoad();
     }
     
     [self makePanelVisibleAtIndex:0];
@@ -225,103 +226,103 @@
         [self appendCloseViewAtXIndex:&contentXIndex];
     }
     
-    [self insertSubview:self.scrollView aboveSubview:self.pageBgFront];
+    [self insertSubview:self.scrollView aboveSubview:self.slideBgFront];
     self.scrollView.contentSize = CGSizeMake(contentXIndex, self.scrollView.frame.size.height);
     
-    self.pageBgBack.alpha = 0;
-    self.pageBgBack.image = [self bgForPage:1];
-    self.pageBgFront.alpha = 1;
-    self.pageBgFront.image = [self bgForPage:0];
+    self.slideBgBack.alpha = 0;
+    self.slideBgBack.image = [self bgForSlide:1];
+    self.slideBgFront.alpha = 1;
+    self.slideBgFront.image = [self bgForSlide:0];
 }
 
-- (UIView *)viewForPage:(ECScrollingPage *)page atXIndex:(CGFloat *)xIndex {
+- (UIView *)viewForSlide:(ECSlide *)slide atXIndex:(CGFloat *)xIndex {
     
-    UIView *pageView = [[UIView alloc] initWithFrame:CGRectMake(*xIndex, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height)];
+    UIView *slideView = [[UIView alloc] initWithFrame:CGRectMake(*xIndex, 0, self.scrollView.frame.size.width, self.scrollView.frame.size.height)];
     
     *xIndex += self.scrollView.frame.size.width;
     
-    if(page.customView) {
-        page.customView.frame = pageView.bounds;
-        [pageView addSubview:page.customView];
-        return pageView;
+    if(slide.customView) {
+        slide.customView.frame = slideView.bounds;
+        [slideView addSubview:slide.customView];
+        return slideView;
     }
     
     UIButton *tapButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    tapButton.frame = pageView.bounds;
-    [tapButton addTarget:self action:@selector(pageTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [pageView addSubview:tapButton];
+    tapButton.frame = slideView.bounds;
+    [tapButton addTarget:self action:@selector(slideTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [slideView addSubview:tapButton];
     
-    if(page.titleIconView) {
-        UIView *titleImageView = page.titleIconView;
+    if(slide.titleIconView) {
+        UIView *titleImageView = slide.titleIconView;
         CGRect rect1 = titleImageView.frame;
         rect1.origin.x = (self.scrollView.frame.size.width - rect1.size.width)/2;
-        rect1.origin.y = page.titleIconPositionY;
+        rect1.origin.y = slide.titleIconPositionY;
         titleImageView.frame = rect1;
         titleImageView.tag = kTitleImageViewTag;
         
-        [pageView addSubview:titleImageView];
+        [slideView addSubview:titleImageView];
     }
     
-    if(page.title.length) {
+    if(slide.title.length) {
         CGFloat titleHeight;
         
-        if ([page.title respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
-            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:page.title attributes:@{ NSFontAttributeName: page.titleFont }];
+        if ([slide.title respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:slide.title attributes:@{ NSFontAttributeName: slide.titleFont }];
             CGRect rect = [attributedText boundingRectWithSize:(CGSize){self.scrollView.frame.size.width - 20, CGFLOAT_MAX} options:NSStringDrawingUsesLineFragmentOrigin context:nil];
             titleHeight = ceilf(rect.size.height);
         } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            titleHeight = [page.title sizeWithFont:page.titleFont constrainedToSize:CGSizeMake(self.scrollView.frame.size.width - 20, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
+            titleHeight = [slide.title sizeWithFont:slide.titleFont constrainedToSize:CGSizeMake(self.scrollView.frame.size.width - 20, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping].height;
 #pragma clang diagnostic pop
         }
         
-        CGRect titleLabelFrame = CGRectMake(10, self.frame.size.height - page.titlePositionY, self.scrollView.frame.size.width - 20, titleHeight);
+        CGRect titleLabelFrame = CGRectMake(10, self.frame.size.height - slide.titlePositionY, self.scrollView.frame.size.width - 20, titleHeight);
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:titleLabelFrame];
-        titleLabel.text = page.title;
-        titleLabel.font = page.titleFont;
-        titleLabel.textColor = page.titleColor;
+        titleLabel.text = slide.title;
+        titleLabel.font = slide.titleFont;
+        titleLabel.textColor = slide.titleColor;
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         titleLabel.numberOfLines = 0;
         titleLabel.tag = kTitleLabelTag;
         
-        [pageView addSubview:titleLabel];
+        [slideView addSubview:titleLabel];
     }
     
-    if([page.desc length]) {
+    if([slide.desc length]) {
         CGRect descLabelFrame;
         
-        if(page.descWidth != 0) {
-            descLabelFrame = CGRectMake((self.frame.size.width - page.descWidth)/2, self.frame.size.height - page.descPositionY, page.descWidth, 500);
+        if(slide.descWidth != 0) {
+            descLabelFrame = CGRectMake((self.frame.size.width - slide.descWidth)/2, self.frame.size.height - slide.descPositionY, slide.descWidth, 500);
         } else {
-            descLabelFrame = CGRectMake(0, self.frame.size.height - page.descPositionY, self.scrollView.frame.size.width, 500);
+            descLabelFrame = CGRectMake(0, self.frame.size.height - slide.descPositionY, self.scrollView.frame.size.width, 500);
         }
         
         UITextView *descLabel = [[UITextView alloc] initWithFrame:descLabelFrame];
-        descLabel.text = page.desc;
+        descLabel.text = slide.desc;
         descLabel.scrollEnabled = NO;
-        descLabel.font = page.descFont;
-        descLabel.textColor = page.descColor;
+        descLabel.font = slide.descFont;
+        descLabel.textColor = slide.descColor;
         descLabel.backgroundColor = [UIColor clearColor];
         descLabel.textAlignment = NSTextAlignmentCenter;
         descLabel.userInteractionEnabled = NO;
         descLabel.tag = kDescLabelTag;
         
-        [pageView addSubview:descLabel];
+        [slideView addSubview:descLabel];
     }
     
-    if(page.subviews) {
-        for (UIView *subV in page.subviews) {
-            [pageView addSubview:subV];
+    if(slide.subviews) {
+        for (UIView *subV in slide.subviews) {
+            [slideView addSubview:subV];
         }
     }
     
-    pageView.accessibilityLabel = [NSString stringWithFormat:@"scrolling_page_view_%lu",(unsigned long)[self.pages indexOfObject:page]];
+    slideView.accessibilityLabel = [NSString stringWithFormat:@"slide_view_%lu",(unsigned long)[self.slides indexOfObject:slide]];
     
-    return pageView;
+    return slideView;
 }
 
 - (void)appendCloseViewAtXIndex:(CGFloat*)xIndex {
@@ -336,9 +337,8 @@
     UIView *closeView = [self.scrollView viewWithTag:124];
     if(closeView) {
         [closeView removeFromSuperview];
+        *xIndex -= self.scrollView.frame.size.width;
     }
-    
-    *xIndex -= self.scrollView.frame.size.width;
 }
 
 - (void)buildFooterView {
@@ -348,7 +348,7 @@
     
     self.pageControl.autoresizingMask =  UIViewAutoresizingFlexibleWidth;
     [self.pageControl addTarget:self action:@selector(showPanelAtPageControl) forControlEvents:UIControlEventValueChanged];
-    self.pageControl.numberOfPages = _pages.count;
+    self.pageControl.numberOfPages = _slides.count;
     [self addSubview:self.pageControl];
     
     self.skipButton = [[UIButton alloc] initWithFrame:CGRectMake(self.scrollView.frame.size.width - 80, self.pageControl.frame.origin.y - ((30 - self.pageControl.frame.size.height)/2), 80, 30)];
@@ -373,8 +373,8 @@
 
 #pragma mark - UIScrollView Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-    if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageStartScrolling:withIndex:)] && self.currentPageIndex < [self.pages count]) {
-        [self.delegate scrollingPageView:self pageStartScrolling:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+    if ([(id)self.delegate respondsToSelector:@selector(slidePlayer:slideStartScrolling:withIndex:)] && self.currentSlideIndex < [self.slides count]) {
+        [self.delegate slidePlayer:self slideStartScrolling:_slides[self.currentSlideIndex] withIndex:self.currentSlideIndex];
     }
     
     [self disableAutoScroll];
@@ -382,8 +382,8 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self checkIndexForScrollView:scrollView];
-    if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageEndScrolling:withIndex:)] && self.currentPageIndex < [self.pages count]) {
-        [self.delegate scrollingPageView:self pageEndScrolling:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+    if ([(id)self.delegate respondsToSelector:@selector(slidePlayer:slideEndScrolling:withIndex:)] && self.currentSlideIndex < [self.slides count]) {
+        [self.delegate slidePlayer:self slideEndScrolling:_slides[self.currentSlideIndex] withIndex:self.currentSlideIndex];
     }
 }
 
@@ -392,21 +392,21 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    self.visiblePageIndex = (scrollView.contentOffset.x + scrollView.bounds.size.width/2)/self.scrollView.frame.size.width;
+    self.visibleSlideIndex = (scrollView.contentOffset.x + scrollView.bounds.size.width/2)/self.scrollView.frame.size.width;
     
     float offset = scrollView.contentOffset.x / self.scrollView.frame.size.width;
-    NSInteger page = (NSInteger)(offset);
+    NSInteger slide = (NSInteger)(offset);
     
-    if (page == (_pages.count - 1) && self.borderBehavior == kSwipeToExit) {
-        self.alpha = ((self.scrollView.frame.size.width*_pages.count)-self.scrollView.contentOffset.x)/self.scrollView.frame.size.width;
+    if (slide == (_slides.count - 1) && self.borderBehavior == kSwipeToExit) {
+        self.alpha = ((self.scrollView.frame.size.width*_slides.count)-self.scrollView.contentOffset.x)/self.scrollView.frame.size.width;
     } else {
         [self crossDissolveForOffset:offset];
     }
     
-    if (self.visiblePageIndex < _pages.count) {
-        self.pageControl.currentPage = self.visiblePageIndex;
+    if (self.visibleSlideIndex < _slides.count) {
+        self.pageControl.currentPage = self.visibleSlideIndex;
         
-        [self makePanelVisibleAtIndex:self.visiblePageIndex];
+        [self makePanelVisibleAtIndex:self.visibleSlideIndex];
     }
     
     [self enableAutoScroll];
@@ -418,19 +418,19 @@ float easeOutValue(float value) {
 }
 
 - (void)crossDissolveForOffset:(float)offset {
-    NSInteger page = (NSInteger)(offset);
-    float alphaValue = offset - page;
+    NSInteger slide = (NSInteger)(offset);
+    float alphaValue = offset - slide;
     
-    if (alphaValue < 0 && self.visiblePageIndex == 0){
-        self.pageBgBack.image = nil;
-        self.pageBgFront.alpha = (1 + alphaValue);
+    if (alphaValue < 0 && self.visibleSlideIndex == 0){
+        self.slideBgBack.image = nil;
+        self.slideBgFront.alpha = (1 + alphaValue);
         return;
     }
     
-    self.pageBgFront.alpha = 1;
-    self.pageBgFront.image = [self bgForPage:page];
-    self.pageBgBack.alpha = 0;
-    self.pageBgBack.image = [self bgForPage:page+1];
+    self.slideBgFront.alpha = 1;
+    self.slideBgFront.image = [self bgForSlide:slide];
+    self.slideBgBack.alpha = 0;
+    self.slideBgBack.image = [self bgForSlide:slide+1];
     
     float backLayerAlpha = alphaValue;
     float frontLayerAlpha = (1 - alphaValue);
@@ -440,15 +440,15 @@ float easeOutValue(float value) {
         frontLayerAlpha = easeOutValue(frontLayerAlpha);
     }
     
-    self.pageBgBack.alpha = backLayerAlpha;
-    self.pageBgFront.alpha = frontLayerAlpha;
+    self.slideBgBack.alpha = backLayerAlpha;
+    self.slideBgFront.alpha = frontLayerAlpha;
     
     if(self.titleView) {
-        if([self showTitleViewForPage:page] && [self showTitleViewForPage:page+1]) {
+        if([self showTitleViewForSlide:slide] && [self showTitleViewForSlide:slide+1]) {
             [self.titleView setAlpha:1.0];
-        } else if(![self showTitleViewForPage:page] && ![self showTitleViewForPage:page+1]) {
+        } else if(![self showTitleViewForSlide:slide] && ![self showTitleViewForSlide:slide+1]) {
             [self.titleView setAlpha:0.0];
-        } else if([self showTitleViewForPage:page]) {
+        } else if([self showTitleViewForSlide:slide]) {
             [self.titleView setAlpha:(1 - alphaValue)];
         } else {
             [self.titleView setAlpha:alphaValue];
@@ -456,11 +456,11 @@ float easeOutValue(float value) {
     }
     
     if(self.skipButton) {
-        if(!self.showSkipButtonOnlyOnLastPage) {
+        if(!self.showSkipButtonOnlyOnLastSlide) {
             [self.skipButton setAlpha:1.0];
-        } else if(page < (long)[self.pages count] - 2) {
+        } else if(slide < (long)[self.slides count] - 2) {
             [self.skipButton setAlpha:0.0];
-        } else if(page == [self.pages count] - 1) {
+        } else if(slide == [self.slides count] - 1) {
             [self.skipButton setAlpha:(1 - alphaValue)];
         } else {
             [self.skipButton setAlpha:alphaValue];
@@ -468,34 +468,34 @@ float easeOutValue(float value) {
     }
 }
 
-- (UIImage *)bgForPage:(NSInteger)idx {
-    if(idx >= _pages.count || idx < 0)
+- (UIImage *)bgForSlide:(NSInteger)idx {
+    if(idx >= _slides.count || idx < 0)
         return nil;
     
-    return ((ECScrollingPage *)_pages[idx]).bgImage;
+    return ((ECSlide *)_slides[idx]).bgImage;
 }
 
 #pragma mark - Custom setters
 
-- (void)notifyDelegateWithPreviousPage:(NSInteger)previousPageIndex andCurrentPage:(NSInteger)currentPageIndex {
-    if(currentPageIndex!=_currentPageIndex && currentPageIndex < _pages.count) {
-        ECScrollingPage* previousPage = _pages[previousPageIndex];
-        ECScrollingPage* currentPage = _pages[currentPageIndex];
-        if(previousPage.onPageDidDisappear) previousPage.onPageDidDisappear();
-        if(currentPage.onPageDidAppear) currentPage.onPageDidAppear();
+- (void)notifyDelegateWithPreviousSlide:(NSInteger)previousSlideIndex andCurrentSlide:(NSInteger)currentSlideIndex {
+    if(currentSlideIndex!=_currentSlideIndex && currentSlideIndex < _slides.count) {
+        ECSlide* previousSlide = _slides[previousSlideIndex];
+        ECSlide* currentSlide = _slides[currentSlideIndex];
+        if(previousSlide.onSlideDidDisappear) previousSlide.onSlideDidDisappear();
+        if(currentSlide.onSlideDidAppear) currentSlide.onSlideDidAppear();
         
-        if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageAppeared:withIndex:)]) {
-            [self.delegate scrollingPageView:self pageAppeared:_pages[currentPageIndex] withIndex:currentPageIndex];
+        if ([(id)self.delegate respondsToSelector:@selector(slidePlayer:slideAppeared:withIndex:)]) {
+            [self.delegate slidePlayer:self slideAppeared:_slides[currentSlideIndex] withIndex:currentSlideIndex];
         }
     }
 }
 
-- (void)setPages:(NSArray *)pages {
-    _pages = [pages copy];
+- (void)setSlides:(NSArray *)slides {
+    _slides = [slides copy];
     [self.scrollView removeFromSuperview];
     self.scrollView = nil;
     [self buildScrollView];
-    self.pageControl.numberOfPages = _pages.count;
+    self.pageControl.numberOfPages = _slides.count;
 }
 
 - (void)setBgImage:(UIImage *)bgImage {
@@ -506,8 +506,8 @@ float easeOutValue(float value) {
 - (void)setBgViewContentMode:(UIViewContentMode)bgViewContentMode {
     _bgViewContentMode = bgViewContentMode;
     self.bgImageView.contentMode = bgViewContentMode;
-    self.pageBgBack.contentMode = bgViewContentMode;
-    self.pageBgFront.contentMode = bgViewContentMode;
+    self.slideBgBack.contentMode = bgViewContentMode;
+    self.slideBgFront.contentMode = bgViewContentMode;
 }
 
 -(void)setAutoScrolling:(bool)autoScrolling {
@@ -517,7 +517,7 @@ float easeOutValue(float value) {
     }
 }
 
-- (void)setBorderBehavior:(ECSlideShowReachBorderBehavior)borderBehavior {
+- (void)setBorderBehavior:(ECSlidePlayerBorderBehavior)borderBehavior {
     if (borderBehavior != _borderBehavior) {
         CGFloat contentXIndex = self.scrollView.contentSize.width;
         switch (borderBehavior) {
@@ -526,7 +526,7 @@ float easeOutValue(float value) {
                 break;
             case kLoop:     // no break for this case because it has to remove close view too
             case kBounce:
-             default:
+            default:
                 [self removeCloseViewAtXIndex:&contentXIndex];
                 break;
         }
@@ -535,7 +535,7 @@ float easeOutValue(float value) {
     _borderBehavior = borderBehavior;
 }
 
--(void)setShowMode:(ECSlideShowMode)showMode {
+-(void)setShowMode:(ECSlidePlayerMode)showMode {
     _showMode = showMode;
     switch (showMode) {
     case kScrollingImageMode:
@@ -547,7 +547,7 @@ float easeOutValue(float value) {
         self.autoScrolling = NO;
         break;
     case kCustomMode:
-     default:
+    default:
         self.borderBehavior = kBounce;
         self.autoScrolling = NO;
         break;
@@ -604,8 +604,8 @@ float easeOutValue(float value) {
     [self addSubview:_skipButton];
 }
 
-- (void)setShowSkipButtonOnlyOnLastPage:(bool)showSkipButtonOnlyOnLastPage {
-    _showSkipButtonOnlyOnLastPage = showSkipButtonOnlyOnLastPage;
+- (void)setShowSkipButtonOnlyOnLastSlide:(bool)showSkipButtonOnlyOnLastSlide {
+    _showSkipButtonOnlyOnLastSlide = showSkipButtonOnlyOnLastSlide;
     
     float offset = self.scrollView.contentOffset.x / self.scrollView.frame.size.width;
     [self crossDissolveForOffset:offset];
@@ -639,8 +639,8 @@ float easeOutValue(float value) {
     }
     
     CGRect parallaxFrame = CGRectMake(-self.motionEffectsRelativeValue, -self.motionEffectsRelativeValue, self.frame.size.width + (self.motionEffectsRelativeValue * 2), self.frame.size.height + (self.motionEffectsRelativeValue * 2));
-    [self.pageBgFront setFrame:parallaxFrame];
-    [self.pageBgBack setFrame:parallaxFrame];
+    [self.slideBgFront setFrame:parallaxFrame];
+    [self.slideBgBack setFrame:parallaxFrame];
     [self.bgImageView setFrame:parallaxFrame];
     
     // Set vertical effect
@@ -665,8 +665,8 @@ float easeOutValue(float value) {
     
     // Add both effects to all background image views
     [UIView animateWithDuration:0.5f animations:^{
-        [self.pageBgFront setMotionEffects:@[group]];
-        [self.pageBgBack setMotionEffects:@[group]];
+        [self.slideBgFront setMotionEffects:@[group]];
+        [self.slideBgBack setMotionEffects:@[group]];
         [self.bgImageView setMotionEffects:@[group]];
     }];
 }
@@ -677,8 +677,8 @@ float easeOutValue(float value) {
     }
     
     [UIView animateWithDuration:0.5f animations:^{
-        [self.pageBgFront removeMotionEffect:self.pageBgFront.motionEffects[0]];
-        [self.pageBgBack removeMotionEffect:self.pageBgBack.motionEffects[0]];
+        [self.slideBgFront removeMotionEffect:self.slideBgFront.motionEffects[0]];
+        [self.slideBgBack removeMotionEffect:self.slideBgBack.motionEffects[0]];
         [self.bgImageView removeMotionEffect:self.bgImageView.motionEffects[0]];
     }];
 }
@@ -687,18 +687,18 @@ float easeOutValue(float value) {
 
 - (void)showInView:(UIView *)view animateDuration:(CGFloat)duration {
     self.alpha = 0;
-    _currentPageIndex = 0;
+    _currentSlideIndex = 0;
     self.scrollView.contentOffset = CGPointZero;
     [view addSubview:self];
     
     [UIView animateWithDuration:duration animations:^{
         self.alpha = 1;
     } completion:^(BOOL finished) {
-        ECScrollingPage* currentPage = _pages[self.currentPageIndex];
-        if(currentPage.onPageDidAppear) currentPage.onPageDidAppear();
+        ECSlide* currentSlide = _slides[self.currentSlideIndex];
+        if(currentSlide.onSlideDidAppear) currentSlide.onSlideDidAppear();
         
-        if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageAppeared:withIndex:)]) {
-            [self.delegate scrollingPageView:self pageAppeared:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+        if ([(id)self.delegate respondsToSelector:@selector(slidePlayer:slideAppeared:withIndex:)]) {
+            [self.delegate slidePlayer:self slideAppeared:_slides[self.currentSlideIndex] withIndex:self.currentSlideIndex];
         }
     }];
 }
@@ -711,35 +711,35 @@ float easeOutValue(float value) {
 	}];
 }
 
-- (void)setCurrentPageIndex:(NSInteger)currentPageIndex {
-    [self setCurrentPageIndex:currentPageIndex animated:NO];
+- (void)setCurrentSlideIndex:(NSInteger)currentSlideIndex {
+    [self setCurrentSlideIndex:currentSlideIndex animated:NO];
 }
 
-- (void)setCurrentPageIndex:(NSInteger)currentPageIndex animated:(BOOL)animated {
-    if(currentPageIndex < 0 || currentPageIndex >= [self.pages count]) {
-        NSLog(@"Wrong currentPageIndex received: %ld",(long)currentPageIndex);
+- (void)setCurrentSlideIndex:(NSInteger)currentSlideIndex animated:(BOOL)animated {
+    if(currentSlideIndex < 0 || currentSlideIndex >= [self.slides count]) {
+        NSLog(@"Wrong currentSlideIndex received: %ld",(long)currentSlideIndex);
         return;
     }
     
-    float offset = currentPageIndex * self.scrollView.frame.size.width;
-    CGRect pageRect = { .origin.x = offset, .origin.y = 0.0, .size.width = self.scrollView.frame.size.width, .size.height = self.scrollView.frame.size.height };
-    [self.scrollView scrollRectToVisible:pageRect animated:animated];
+    float offset = currentSlideIndex * self.scrollView.frame.size.width;
+    CGRect slideRect = { .origin.x = offset, .origin.y = 0.0, .size.width = self.scrollView.frame.size.width, .size.height = self.scrollView.frame.size.height };
+    [self.scrollView scrollRectToVisible:slideRect animated:animated];
 }
 
-- (IBAction)pageTapped:(id)sender {
+- (IBAction)slideTapped:(id)sender {
     // The tapped method is delegated
-    if ([(id)self.delegate respondsToSelector:@selector(scrollingPageView:pageTapped:withIndex:)]) {
-        [self.delegate scrollingPageView:self pageTapped:_pages[self.currentPageIndex] withIndex:self.currentPageIndex];
+    if ([(id)self.delegate respondsToSelector:@selector(slidePlayer:slideTapped:withIndex:)]) {
+        [self.delegate slidePlayer:self slideTapped:_slides[self.currentSlideIndex] withIndex:self.currentSlideIndex];
         return;
     }
     
     if(!self.tapToNext && !self.autoScrolling) { //TODO: remove timer when exit
         return;
     }
-    if(self.currentPageIndex + 1 >= [self.pages count]) {
+    if(self.currentSlideIndex + 1 >= [self.slides count]) {
         [self hideWithFadeOutDuration:0.3];
     } else {
-        [self setCurrentPageIndex:self.currentPageIndex + 1 animated:YES];
+        [self setCurrentSlideIndex:self.currentSlideIndex + 1 animated:YES];
     }
 }
 
@@ -749,7 +749,7 @@ float easeOutValue(float value) {
     if (self.autoScrolling && self.autoScrollingTimer == nil) {
         self.autoScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollingInterval
                                                                    target:self
-                                                                 selector:@selector(pageTapped:)
+                                                                 selector:@selector(slideTapped:)
                                                                  userInfo:nil
                                                                   repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:self.autoScrollingTimer forMode:NSRunLoopCommonModes];

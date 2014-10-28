@@ -1,5 +1,5 @@
 //
-//  ECScrollingPage.h
+//  ECSlide.h
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
 
@@ -7,19 +7,19 @@
 
 typedef void (^VoidBlock)();
 
-@interface ECScrollingPage : NSObject
+@interface ECSlide : NSObject
 
 // background used for cross-dissolve
 @property (nonatomic, strong) UIImage *bgImage;
-// show or hide ECScrollingPageView titleView on this page (default YES)
+// show or hide ECSlidePlayer titleView on this slide (default YES)
 @property (nonatomic, assign) bool showTitleView;
 
 
-// properties for default ECScrollingPage layout
+// properties for default ECSlide layout
 //
 // title image Y position - from top of the screen
 // title and description labels Y position - from bottom of the screen
-// all items from subviews array will be added on page
+// all items from subviews array will be added on slide
 
 /**
 * The title view that is presented above the title label.
@@ -42,18 +42,18 @@ typedef void (^VoidBlock)();
 
 @property (nonatomic, strong) NSArray *subviews;
 
-@property (nonatomic,copy) VoidBlock onPageDidLoad;
-@property (nonatomic,copy) VoidBlock onPageDidAppear;
-@property (nonatomic,copy) VoidBlock onPageDidDisappear;
+@property (nonatomic,copy) VoidBlock onSlideDidLoad;
+@property (nonatomic,copy) VoidBlock onSlideDidAppear;
+@property (nonatomic,copy) VoidBlock onSlideDidDisappear;
 
 
 // if customView is set - all other default properties are ignored
 @property (nonatomic, strong) UIView *customView;
 
-@property(nonatomic, strong, readonly) UIView *pageView;
+@property(nonatomic, strong, readonly) UIView *slideView;
 
-+ (instancetype)page;
-+ (instancetype)pageWithCustomView:(UIView *)customV;
-+ (instancetype)pageWithCustomViewFromNibNamed:(NSString *)nibName;
++ (instancetype)slide;
++ (instancetype)slideWithCustomView:(UIView *)customV;
++ (instancetype)slideWithCustomViewFromNibNamed:(NSString *)nibName;
 
 @end

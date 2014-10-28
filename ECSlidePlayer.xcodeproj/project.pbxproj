@@ -31,8 +31,8 @@
 		5513590317E4406000B41A90 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5513590217E4406000B41A90 /* CoreGraphics.framework */; };
 		5513593417E440C500B41A90 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5513592317E440C500B41A90 /* AppDelegate.m */; };
 		5513593517E440C500B41A90 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5513592517E440C500B41A90 /* ViewController.m */; };
-		5513593617E440C500B41A90 /* ECScrollingPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5513592817E440C500B41A90 /* ECScrollingPage.m */; };
-		5513593717E440C500B41A90 /* ECScrollingPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5513592A17E440C500B41A90 /* ECScrollingPageView.m */; };
+		5513593617E440C500B41A90 /* ECSlide.m in Sources */ = {isa = PBXBuildFile; fileRef = 5513592817E440C500B41A90 /* ECSlide.m */; };
+		5513593717E440C500B41A90 /* ECSlidePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5513592A17E440C500B41A90 /* ECSlidePlayer.m */; };
 		5513593817E440C500B41A90 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5513592C17E440C500B41A90 /* Default-568h@2x.png */; };
 		5513593917E440C500B41A90 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 5513592D17E440C500B41A90 /* Default.png */; };
 		5513593A17E440C500B41A90 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5513592E17E440C500B41A90 /* Default@2x.png */; };
@@ -61,7 +61,7 @@
 		551061AE183AC21D003D79BF /* icon3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon3@2x.png"; sourceTree = "<group>"; };
 		551061B0183AC28B003D79BF /* icon1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon1@2x.png"; sourceTree = "<group>"; };
 		551061B1183AC28B003D79BF /* icon2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon2@2x.png"; sourceTree = "<group>"; };
-		551358FB17E4406000B41A90 /* ECScrollingPageView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ECScrollingPageView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		551358FB17E4406000B41A90 /* ECSlidePlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ECSlidePlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		551358FE17E4406000B41A90 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5513590017E4406000B41A90 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5513590217E4406000B41A90 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -69,16 +69,16 @@
 		5513592317E440C500B41A90 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		5513592417E440C500B41A90 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		5513592517E440C500B41A90 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		5513592717E440C500B41A90 /* ECScrollingPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECScrollingPage.h; sourceTree = "<group>"; };
-		5513592817E440C500B41A90 /* ECScrollingPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECScrollingPage.m; sourceTree = "<group>"; };
-		5513592917E440C500B41A90 /* ECScrollingPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECScrollingPageView.h; sourceTree = "<group>"; };
-		5513592A17E440C500B41A90 /* ECScrollingPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECScrollingPageView.m; sourceTree = "<group>"; };
+		5513592717E440C500B41A90 /* ECSlide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECSlide.h; sourceTree = "<group>"; };
+		5513592817E440C500B41A90 /* ECSlide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECSlide.m; sourceTree = "<group>"; };
+		5513592917E440C500B41A90 /* ECSlidePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECSlidePlayer.h; sourceTree = "<group>"; };
+		5513592A17E440C500B41A90 /* ECSlidePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECSlidePlayer.m; sourceTree = "<group>"; };
 		5513592C17E440C500B41A90 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		5513592D17E440C500B41A90 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		5513592E17E440C500B41A90 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		5513592F17E440C500B41A90 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
-		5513593117E440C500B41A90 /* ECScrollingPageView-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ECScrollingPageView-Info.plist"; sourceTree = "<group>"; };
-		5513593217E440C500B41A90 /* ECScrollingPageView-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ECScrollingPageView-Prefix.pch"; sourceTree = "<group>"; };
+		5513593117E440C500B41A90 /* ECSlidePlayer-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ECSlidePlayer-Info.plist"; sourceTree = "<group>"; };
+		5513593217E440C500B41A90 /* ECSlidePlayer-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ECSlidePlayer-Prefix.pch"; sourceTree = "<group>"; };
 		5513593317E440C500B41A90 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,7 +140,7 @@
 		551358F217E4405F00B41A90 = {
 			isa = PBXGroup;
 			children = (
-				5513592617E440C500B41A90 /* ECScrollingPageView */,
+				5513592617E440C500B41A90 /* ECSlidePlayer */,
 				5513592117E440C500B41A90 /* Classes */,
 				5513592B17E440C500B41A90 /* Resources */,
 				5513593017E440C500B41A90 /* Supporting-files */,
@@ -152,7 +152,7 @@
 		551358FC17E4406000B41A90 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				551358FB17E4406000B41A90 /* ECScrollingPageView.app */,
+				551358FB17E4406000B41A90 /* ECSlidePlayer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -179,15 +179,15 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
-		5513592617E440C500B41A90 /* ECScrollingPageView */ = {
+		5513592617E440C500B41A90 /* ECSlidePlayer */ = {
 			isa = PBXGroup;
 			children = (
-				5513592717E440C500B41A90 /* ECScrollingPage.h */,
-				5513592817E440C500B41A90 /* ECScrollingPage.m */,
-				5513592917E440C500B41A90 /* ECScrollingPageView.h */,
-				5513592A17E440C500B41A90 /* ECScrollingPageView.m */,
+				5513592717E440C500B41A90 /* ECSlide.h */,
+				5513592817E440C500B41A90 /* ECSlide.m */,
+				5513592917E440C500B41A90 /* ECSlidePlayer.h */,
+				5513592A17E440C500B41A90 /* ECSlidePlayer.m */,
 			);
-			name = ECScrollingPageView;
+			name = ECSlidePlayer;
 			path = EAIntroView;
 			sourceTree = "<group>";
 		};
@@ -207,8 +207,8 @@
 		5513593017E440C500B41A90 /* Supporting-files */ = {
 			isa = PBXGroup;
 			children = (
-				5513593117E440C500B41A90 /* ECScrollingPageView-Info.plist */,
-				5513593217E440C500B41A90 /* ECScrollingPageView-Prefix.pch */,
+				5513593117E440C500B41A90 /* ECSlidePlayer-Info.plist */,
+				5513593217E440C500B41A90 /* ECSlidePlayer-Prefix.pch */,
 				5513593317E440C500B41A90 /* main.m */,
 			);
 			path = "Supporting-files";
@@ -217,9 +217,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		551358FA17E4406000B41A90 /* ECScrollingPageView */ = {
+		551358FA17E4406000B41A90 /* ECSlidePlayer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5513591E17E4406000B41A90 /* Build configuration list for PBXNativeTarget "ECScrollingPageView" */;
+			buildConfigurationList = 5513591E17E4406000B41A90 /* Build configuration list for PBXNativeTarget "ECSlidePlayer" */;
 			buildPhases = (
 				551358F717E4406000B41A90 /* Sources */,
 				551358F817E4406000B41A90 /* Frameworks */,
@@ -229,9 +229,9 @@
 			);
 			dependencies = (
 			);
-			name = ECScrollingPageView;
+			name = ECSlidePlayer;
 			productName = EAIntroView;
-			productReference = 551358FB17E4406000B41A90 /* ECScrollingPageView.app */;
+			productReference = 551358FB17E4406000B41A90 /* ECSlidePlayer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -243,7 +243,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = SampleCorp;
 			};
-			buildConfigurationList = 551358F617E4405F00B41A90 /* Build configuration list for PBXProject "ECScrollingPageView" */;
+			buildConfigurationList = 551358F617E4405F00B41A90 /* Build configuration list for PBXProject "ECSlidePlayer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -255,7 +255,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				551358FA17E4406000B41A90 /* ECScrollingPageView */,
+				551358FA17E4406000B41A90 /* ECSlidePlayer */,
 			);
 		};
 /* End PBXProject section */
@@ -300,8 +300,8 @@
 				5513593417E440C500B41A90 /* AppDelegate.m in Sources */,
 				551061A5183AB999003D79BF /* SMPageControl.m in Sources */,
 				5513593517E440C500B41A90 /* ViewController.m in Sources */,
-				5513593617E440C500B41A90 /* ECScrollingPage.m in Sources */,
-				5513593717E440C500B41A90 /* ECScrollingPageView.m in Sources */,
+				5513593617E440C500B41A90 /* ECSlide.m in Sources */,
+				5513593717E440C500B41A90 /* ECSlidePlayer.m in Sources */,
 				5513593D17E440C500B41A90 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,10 +369,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Supporting-files/ECScrollingPageView-Prefix.pch";
-				INFOPLIST_FILE = "Supporting-files/ECScrollingPageView-Info.plist";
+				GCC_PREFIX_HEADER = "Supporting-files/ECSlidePlayer-Prefix.pch";
+				INFOPLIST_FILE = "Supporting-files/ECSlidePlayer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PRODUCT_NAME = ECScrollingPageView;
+				PRODUCT_NAME = ECSlidePlayer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -381,10 +381,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Supporting-files/ECScrollingPageView-Prefix.pch";
-				INFOPLIST_FILE = "Supporting-files/ECScrollingPageView-Info.plist";
+				GCC_PREFIX_HEADER = "Supporting-files/ECSlidePlayer-Prefix.pch";
+				INFOPLIST_FILE = "Supporting-files/ECSlidePlayer-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PRODUCT_NAME = ECScrollingPageView;
+				PRODUCT_NAME = ECSlidePlayer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -392,7 +392,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		551358F617E4405F00B41A90 /* Build configuration list for PBXProject "ECScrollingPageView" */ = {
+		551358F617E4405F00B41A90 /* Build configuration list for PBXProject "ECSlidePlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5513591C17E4406000B41A90 /* Debug */,
@@ -401,7 +401,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5513591E17E4406000B41A90 /* Build configuration list for PBXNativeTarget "ECScrollingPageView" */ = {
+		5513591E17E4406000B41A90 /* Build configuration list for PBXNativeTarget "ECSlidePlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5513591F17E4406000B41A90 /* Debug */,

@@ -1,9 +1,9 @@
 //
-//  ECScrollingPage.m
+//  ECSlide.m
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
 
-#import "ECScrollingPage.h"
+#import "ECSlide.h"
 
 #define DEFAULT_DESCRIPTION_LABEL_SIDE_PADDING 25
 #define DEFAULT_TITLE_FONT [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0]
@@ -13,13 +13,13 @@
 #define DEFAULT_TITLE_LABEL_Y_POSITION 160.0f
 #define DEFAULT_DESCRIPTION_LABEL_Y_POSITION 140.0f
 
-@interface ECScrollingPage ()
-@property(nonatomic, strong, readwrite) UIView *pageView;
+@interface ECSlide ()
+@property(nonatomic, strong, readwrite) UIView *slideView;
 @end
 
-@implementation ECScrollingPage
+@implementation ECSlide
 
-#pragma mark - Page lifecycle
+#pragma mark - Slide lifecycle
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -37,24 +37,24 @@
     return self;
 }
 
-+ (instancetype)page {
++ (instancetype)slide {
     return [[self alloc] init];
 }
 
-+ (instancetype)pageWithCustomView:(UIView *)customV {
-    ECScrollingPage *newPage = [[self alloc] init];
-    newPage.customView = customV;
-    return newPage;
++ (instancetype)slideWithCustomView:(UIView *)customV {
+    ECSlide *newSlide = [[self alloc] init];
+    newSlide.customView = customV;
+    return newSlide;
 }
 
-+ (instancetype)pageWithCustomViewFromNibNamed:(NSString *)nibName {
-    return [self pageWithCustomViewFromNibNamed:nibName bundle:[NSBundle mainBundle]];
++ (instancetype)slideWithCustomViewFromNibNamed:(NSString *)nibName {
+    return [self slideWithCustomViewFromNibNamed:nibName bundle:[NSBundle mainBundle]];
 }
 
-+ (instancetype)pageWithCustomViewFromNibNamed:(NSString *)nibName bundle:(NSBundle*)aBundle {
-    ECScrollingPage *newPage = [[self alloc] init];
-    newPage.customView = [[aBundle loadNibNamed:nibName owner:newPage options:nil] firstObject];
-    return newPage;
++ (instancetype)slideWithCustomViewFromNibNamed:(NSString *)nibName bundle:(NSBundle*)aBundle {
+    ECSlide *newSlide = [[self alloc] init];
+    newSlide.customView = [[aBundle loadNibNamed:nibName owner:newSlide options:nil] firstObject];
+    return newSlide;
 }
 
 @end
