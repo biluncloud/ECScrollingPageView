@@ -377,7 +377,9 @@
         [self.delegate slidePlayer:self slideStartScrolling:_slides[self.currentSlideIndex] withIndex:self.currentSlideIndex];
     }
     
-    [self disableAutoScroll];
+    if (self.autoScrolling) {
+        [self disableAutoScroll];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -409,7 +411,9 @@
         [self makePanelVisibleAtIndex:self.visibleSlideIndex];
     }
     
-    [self enableAutoScroll];
+    if (self.autoScrolling) {
+        [self enableAutoScroll];
+    }
 }
 
 float easeOutValue(float value) {
@@ -514,6 +518,8 @@ float easeOutValue(float value) {
     _autoScrolling = autoScrolling;
     if (autoScrolling) {
         [self enableAutoScroll];
+    } else {
+        [self disableAutoScroll];
     }
 }
 
@@ -749,7 +755,7 @@ float easeOutValue(float value) {
 #pragma mark - Timer
 
 - (void)enableAutoScroll {
-    if (self.autoScrolling && self.autoScrollingTimer == nil) {
+    if (self.autoScrollingTimer == nil) {
         self.autoScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollingInterval
                                                                    target:self
                                                                  selector:@selector(nextSlide)
@@ -760,7 +766,7 @@ float easeOutValue(float value) {
 }
 
 - (void)disableAutoScroll {
-    if (self.autoScrolling && self.autoScrollingTimer != nil) {
+    if (self.autoScrollingTimer != nil) {
         [self.autoScrollingTimer invalidate];
         self.autoScrollingTimer = nil;
     }

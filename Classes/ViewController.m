@@ -135,6 +135,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     slidePlayer.skipButton = btn;
     
     [slidePlayer setDelegate:self];
+    slidePlayer.showMode = kSlidePlayerModeScrollImage;
     [slidePlayer showInView:rootView animateDuration:0.3];
 }
 
