@@ -82,6 +82,11 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     slidePlayer.titleView = titleView;
     slidePlayer.titleViewY = 90;
     slidePlayer.backgroundColor = [UIColor colorWithRed:0.0f green:0.49f blue:0.96f alpha:1.0f]; //iOS7 dark blue
+    
+    slidePlayer.showMode = kSlidePlayerModeCustom;
+    slidePlayer.borderBehavior = kSliderPlayerBorderBehaviorSwipeToExit;
+    slidePlayer.tapToNext = NO;
+    slidePlayer.autoScrolling = YES;
 
     [slidePlayer showInView:rootView animateDuration:0.3];
 }

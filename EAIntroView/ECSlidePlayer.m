@@ -733,9 +733,12 @@ float easeOutValue(float value) {
         return;
     }
     
-    if(!self.tapToNext && !self.autoScrolling) { //TODO: remove timer when exit
+    if(!self.tapToNext) {
         return;
     }
+}
+
+- (void)nextSlide {
     if(self.currentSlideIndex + 1 >= [self.slides count]) {
         [self hideWithFadeOutDuration:0.3];
     } else {
@@ -749,7 +752,7 @@ float easeOutValue(float value) {
     if (self.autoScrolling && self.autoScrollingTimer == nil) {
         self.autoScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:self.autoScrollingInterval
                                                                    target:self
-                                                                 selector:@selector(slideTapped:)
+                                                                 selector:@selector(nextSlide)
                                                                  userInfo:nil
                                                                   repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:self.autoScrollingTimer forMode:NSRunLoopCommonModes];
