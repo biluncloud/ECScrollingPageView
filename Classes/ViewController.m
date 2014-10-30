@@ -85,8 +85,8 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     
     slidePlayer.showMode = kSlidePlayerModeCustom;
     slidePlayer.borderBehavior = kSliderPlayerBorderBehaviorLoop;
-    slidePlayer.tapToNext = YES;
-    slidePlayer.autoScrolling = NO;
+    slidePlayer.tapToNext = NO;
+    slidePlayer.autoScrolling = YES;
 
     [slidePlayer showInView:rootView animateDuration:0.3];
 }
@@ -136,6 +136,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     
     [slidePlayer setDelegate:self];
     slidePlayer.showMode = kSlidePlayerModeScrollImage;
+    
     [slidePlayer showInView:rootView animateDuration:0.3];
 }
 

@@ -64,8 +64,8 @@
 #pragma mark - Private
 
 - (void)applyDefaultsToSelfDuringInitializationWithframe:(CGRect)frame slides:(NSArray *)slidesArray {
-    self.autoScrolling = YES;
     self.autoScrollingInterval = 3;
+    self.autoScrolling = YES;
     self.tapToNext = NO;
     _borderBehavior = kSliderPlayerBorderBehaviorLoop;
     _showMode = kSlidePlayerModeScrollImage;
