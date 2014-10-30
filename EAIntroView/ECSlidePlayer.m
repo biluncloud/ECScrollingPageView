@@ -113,7 +113,6 @@
     return ((ECSlide *)_slides[idx]).showTitleView;
 }
 
-#warning Check whether this is called
 - (void)showPanelAtPageControl {
     [self makePanelVisibleAtIndex:self.currentSlideIndex];
     [self setCurrentSlideIndex:self.pageControl.currentPage animated:YES];
@@ -199,7 +198,6 @@
     });
 }
 
-#warning Check whether the memory is released
 - (void)skipPlay {
     [self hideWithFadeOutDuration:0.3];
 }
