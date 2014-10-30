@@ -2,6 +2,10 @@
 //  ECSlide.m
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
+//  
+//  This is forked from EAIntroView by Evgeny Aleksandrov.
+//  Usage is enhanced, not only introduction but also scrolling
+//  images such as advertisement are supported too. 
 
 #import "ECSlide.h"
 

@@ -2,6 +2,10 @@
 //  ECSlidePlayer.m
 //
 //  Copyright (c) 2013-2014 Evgeny Aleksandrov. License: MIT.
+//  
+//  This is forked from EAIntroView by Evgeny Aleksandrov.
+//  Usage is enhanced, not only introduction but also scrolling
+//  images such as advertisement are supported too. 
 
 #import "ECSlidePlayer.h"
 
@@ -18,13 +22,13 @@
 @property (nonatomic, strong) NSTimer *autoScrollingTimer;
 @property (nonatomic, assign) NSInteger realSlideStartXPosition;    // the x position of the real slide in scrollView
 
-@property(nonatomic, strong) NSLayoutConstraint *pageControlYConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *pageControlYConstraint;
 
 @end
 
 @interface ECSlide()
 
-@property(nonatomic, strong, readwrite) UIView *slideView;
+@property (nonatomic, strong, readwrite) UIView *slideView;
 
 @end
 
@@ -64,7 +68,6 @@
     self.autoScrollingInterval = 3;
     self.tapToNext = NO;
     _borderBehavior = kSliderPlayerBorderBehaviorLoop;
-    self.realSlideStartXPosition = 0;
     _showMode = kSlidePlayerModeScrollImage;
     self.easeOutCrossDisolves = YES;
     self.hideOffscreenSlides = YES;
@@ -103,15 +106,16 @@
 }
 
 - (BOOL)showTitleViewForSlide:(NSInteger)idx {
-    if(idx >= _slides.count || idx < 0)
+    if(idx >= _slides.count || idx < 0) {
         return NO;
+    }
     
     return ((ECSlide *)_slides[idx]).showTitleView;
 }
 
+#warning Check whether this is called
 - (void)showPanelAtPageControl {
     [self makePanelVisibleAtIndex:self.currentSlideIndex];
-    
     [self setCurrentSlideIndex:self.pageControl.currentPage animated:YES];
 }
 
@@ -131,27 +135,26 @@
 
 - (NSInteger)calcSlideIndexFromCurrentPosition {
     NSInteger newSlideIndex = (self.scrollView.contentOffset.x + self.scrollView.bounds.size.width/2)/self.scrollView.frame.size.width;
-    if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
-        newSlideIndex = [self resultWithinRange:newSlideIndex];
-    }
-    return newSlideIndex;
+    return [self resultWithinRange:newSlideIndex];
 }
 
 - (float)calcOffsetFromCurrentPosition {
     float offset = self.scrollView.contentOffset.x / self.scrollView.frame.size.width;
-    if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
-        offset = [self resultWithinRange:offset];
-    }
-    return offset;
+    return [self resultWithinRange:offset];
 }
 
 - (float)resultWithinRange:(float)value {
-    // get in the right range
-    value -= 1;
-    if ((NSInteger)value == -1) {
-        value += [self.slides count];
-    } else if ((NSInteger)value == [self.slides count]) {
-        value -= [self.slides count];
+    if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
+        // because there is a pre auxiliary slide view, so the position
+        // is shifted, we have to shift it back.
+        value -= 1;
+        if ((NSInteger)value == -1) {
+            // we are on the pre auxiliary slide
+            value += [self.slides count];
+        } else if ((NSInteger)value == [self.slides count]) {
+            // we are on the post auxiliary slide
+            value -= [self.slides count];
+        }
     }
     return value;
 }
@@ -180,9 +183,9 @@
 }
 
 - (void)finishPlayAndRemoveSelf {
-	if ([(id)self.delegate respondsToSelector:@selector(slidePlayerDidFinish:)]) {
-		[self.delegate slidePlayerDidFinish:self];
-	}
+    if ([(id)self.delegate respondsToSelector:@selector(slidePlayerDidFinish:)]) {
+        [self.delegate slidePlayerDidFinish:self];
+    }
     
     //prevent last slide flicker on disappearing
     self.alpha = 0;
@@ -600,11 +603,13 @@ float easeOutValue(float value) {
 }
 
 -(void)setAutoScrolling:(bool)autoScrolling {
-    _autoScrolling = autoScrolling;
-    if (autoScrolling) {
-        [self enableAutoScroll];
-    } else {
-        [self disableAutoScroll];
+    if (_autoScrolling != autoScrolling) {
+        _autoScrolling = autoScrolling;
+        if (autoScrolling) {
+            [self enableAutoScroll];
+        } else {
+            [self disableAutoScroll];
+        }
     }
 }
 
@@ -616,21 +621,23 @@ float easeOutValue(float value) {
 }
 
 -(void)setShowMode:(ECSlidePlayerMode)showMode {
-    _showMode = showMode;
-    switch (showMode) {
-    case kSlidePlayerModeScrollImage:
-        self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
-        self.autoScrolling = YES;
-        break;
-    case kSlidePlayerModeIntroduction:
-        self.borderBehavior = kSliderPlayerBorderBehaviorSwipeToExit;
-        self.autoScrolling = NO;
-        break;
-    case kSlidePlayerModeCustom:
-    default:
-        self.borderBehavior = kSliderPlayerBorderBehaviorBounce;
-        self.autoScrolling = NO;
-        break;
+    if (_showMode != showMode) {
+        _showMode = showMode;
+        switch (showMode) {
+        case kSlidePlayerModeScrollImage:
+            self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
+            self.autoScrolling = YES;
+            break;
+        case kSlidePlayerModeIntroduction:
+            self.borderBehavior = kSliderPlayerBorderBehaviorSwipeToExit;
+            self.autoScrolling = NO;
+            break;
+        case kSlidePlayerModeCustom:
+        default:
+            self.borderBehavior = kSliderPlayerBorderBehaviorBounce;
+            self.autoScrolling = NO;
+            break;
+        }
     }
 }
 
@@ -787,8 +794,8 @@ float easeOutValue(float value) {
     [UIView animateWithDuration:duration animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished){
-		[self finishPlayAndRemoveSelf];
-	}];
+        [self finishPlayAndRemoveSelf];
+    }];
 }
 
 - (void)setCurrentSlideIndex:(NSInteger)currentSlideIndex {
