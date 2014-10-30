@@ -116,7 +116,7 @@
 }
 
 - (void)checkIndexForScrollView:(UIScrollView *)scrollView {
-    NSInteger newSlideIndex = [self calcSlideIndexFromCurrentOffset];
+    NSInteger newSlideIndex = [self calcSlideIndexFromCurrentPosition];
     [self notifyDelegateWithPreviousSlide:self.currentSlideIndex andCurrentSlide:newSlideIndex];
     _currentSlideIndex = newSlideIndex;
     
@@ -130,30 +130,31 @@
     }
 }
 
-- (NSInteger)calcSlideIndexFromCurrentOffset {
+- (NSInteger)calcSlideIndexFromCurrentPosition {
     NSInteger newSlideIndex = (self.scrollView.contentOffset.x + self.scrollView.bounds.size.width/2)/self.scrollView.frame.size.width;
     if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
-        newSlideIndex -= 1;
-        if (newSlideIndex == -1) {
-            newSlideIndex = [self.slides count] - 1;
-        } else if (newSlideIndex == [self.slides count]) {
-            newSlideIndex = 0;
-        }
+        newSlideIndex = [self resultWithinRange:newSlideIndex];
     }
     return newSlideIndex;
 }
 
-- (float)calcOffsetIndexFromCurrentPosition {
-    float offset = self.scrollView.contentOffset.x/self.scrollView.frame.size.width;
+- (float)calcOffsetFromCurrentPosition {
+    float offset = self.scrollView.contentOffset.x / self.scrollView.frame.size.width;
     if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
-        offset -= 1;
-        if ((NSInteger)offset == -1) {
-            offset = [self.slides count] - 1;
-        } else if ((NSInteger)offset == [self.slides count]) {
-            offset = 0;
-        }
+        offset = [self resultWithinRange:offset];
     }
     return offset;
+}
+
+- (float)resultWithinRange:(float)value {
+    // get in the right range
+    value -= 1;
+    if ((NSInteger)value == -1) {
+        value += [self.slides count];
+    } else if ((NSInteger)value == [self.slides count]) {
+        value -= [self.slides count];
+    }
+    return value;
 }
 
 - (NSInteger)calcScrollViewOffsetFromCurrentSlideIndex:(NSInteger)currentSlideIndex {
@@ -161,6 +162,20 @@
         currentSlideIndex += 1;
     }
     return currentSlideIndex * self.scrollView.frame.size.width;
+}
+
+- (void)updateScrollViewToTheRightPositionAtBackground {
+    // when the scrolling reaches the borders, we have to update it to the right position
+    // without displaying the animation to users
+    if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
+        BOOL isBorder = self.currentSlideIndex == 0 || self.currentSlideIndex == [self.slides count] - 1;
+        if (isBorder) {
+            NSInteger currentPositionInScrollView = self.scrollView.contentOffset.x / self.scrollView.frame.size.width;
+            if (currentPositionInScrollView != self.currentSlideIndex) {
+                [self setCurrentSlideIndex:self.currentSlideIndex animated:NO];
+            }
+        }
+    }
 }
 
 - (void)finishIntroductionAndRemoveSelf {
@@ -180,6 +195,7 @@
     });
 }
 
+#warning Check whether the memory is released
 - (void)skipIntroduction {
     [self hideWithFadeOutDuration:0.3];
 }
@@ -276,6 +292,13 @@
     self.slideBgBack.image = [self bgForSlide:1];
     self.slideBgFront.alpha = 1;
     self.slideBgFront.image = [self bgForSlide:0];
+}
+
+- (void)rebuildScrollView {
+    [self.scrollView removeFromSuperview];
+    self.scrollView = nil;
+    [self buildScrollView];
+    self.pageControl.numberOfPages = _slides.count;
 }
 
 - (UIView *)viewForSlide:(ECSlide *)slide atXIndex:(CGFloat *)xIndex {
@@ -383,7 +406,7 @@
             ECSlide *postSlideView = _slides[0];
             postSlideView.slideView = [self viewForSlide:postSlideView atXIndex:xIndex];
             [self.scrollView addSubview:postSlideView.slideView];
-            // the callback is not needed because the slide is already informed
+            // the callback is not needed because _slides[0] is already informed
             // if(postSlideView.onSlideDidLoad) postSlideView.onSlideDidLoad();
             
             // add pre slide view
@@ -392,7 +415,7 @@
             ECSlide *preSlideView = _slides[[self.slides count] - 1];
             preSlideView.slideView = [self viewForSlide:preSlideView atXIndex:&xPos];
             [self.scrollView addSubview:preSlideView.slideView];
-            // the callback is not needed because the slide is already informed
+            // the callback is not needed because _slides[[self.slides count] - 1] is already informed
             // if(preSlideView.onSlideDidLoad) preSlideView.onSlideDidLoad();
             break;
         }
@@ -448,26 +471,19 @@
     if ([(id)self.delegate respondsToSelector:@selector(slidePlayer:slideEndScrolling:withIndex:)] && self.currentSlideIndex < [self.slides count]) {
         [self.delegate slidePlayer:self slideEndScrolling:_slides[self.currentSlideIndex] withIndex:self.currentSlideIndex];
     }
-    if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
-        if (self.currentSlideIndex == 0 || self.currentSlideIndex == [self.slides count] - 1) {
-            [self setCurrentSlideIndex:self.currentSlideIndex animated:NO];
-        }
-    }
+
+    [self updateScrollViewToTheRightPositionAtBackground];
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     [self checkIndexForScrollView:scrollView];
-    if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
-        if (self.currentSlideIndex == 0 || self.currentSlideIndex == [self.slides count] - 1) {
-            [self setCurrentSlideIndex:self.currentSlideIndex animated:NO];
-        }
-    }
+    [self updateScrollViewToTheRightPositionAtBackground];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    self.visibleSlideIndex = [self calcSlideIndexFromCurrentOffset];
+    self.visibleSlideIndex = [self calcSlideIndexFromCurrentPosition];
     
-    float offset = [self calcOffsetIndexFromCurrentPosition];
+    float offset = [self calcOffsetFromCurrentPosition];
     NSInteger slide = (NSInteger)(offset);
     
     if (slide == (_slides.count - 1) && self.borderBehavior == kSliderPlayerBorderBehaviorSwipeToExit) {
@@ -567,10 +583,7 @@ float easeOutValue(float value) {
 
 - (void)setSlides:(NSArray *)slides {
     _slides = [slides copy];
-    [self.scrollView removeFromSuperview];
-    self.scrollView = nil;
-    [self buildScrollView];
-    self.pageControl.numberOfPages = _slides.count;
+    [self rebuildScrollView];
 }
 
 - (void)setBgImage:(UIImage *)bgImage {
@@ -597,10 +610,7 @@ float easeOutValue(float value) {
 - (void)setBorderBehavior:(ECSlidePlayerBorderBehavior)borderBehavior {
     if (_borderBehavior != borderBehavior) {
         _borderBehavior = borderBehavior;
-        [self.scrollView removeFromSuperview];
-        self.scrollView = nil;
-        [self buildScrollView];
-        self.pageControl.numberOfPages = _slides.count;
+        [self rebuildScrollView];
     }
 }
 
@@ -628,7 +638,7 @@ float easeOutValue(float value) {
     _titleView = titleView;
     _titleView.frame = CGRectMake((self.frame.size.width-_titleView.frame.size.width)/2, self.titleViewY, _titleView.frame.size.width, _titleView.frame.size.height);
     
-    float offset = [self calcOffsetIndexFromCurrentPosition];
+    float offset = [self calcOffsetFromCurrentPosition];
     [self crossDissolveForOffset:offset];
     
     [self addSubview:_titleView];
@@ -676,7 +686,7 @@ float easeOutValue(float value) {
 - (void)setShowSkipButtonOnlyOnLastSlide:(bool)showSkipButtonOnlyOnLastSlide {
     _showSkipButtonOnlyOnLastSlide = showSkipButtonOnlyOnLastSlide;
     
-    float offset = [self calcOffsetIndexFromCurrentPosition];
+    float offset = [self calcOffsetFromCurrentPosition];
     [self crossDissolveForOffset:offset];
 }
 
