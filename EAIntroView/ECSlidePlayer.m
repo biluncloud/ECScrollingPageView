@@ -121,12 +121,11 @@
     _currentSlideIndex = newSlideIndex;
     
     if (self.currentSlideIndex == (_slides.count)) {
-        
         //if run here, it means you can't  call _slides[self.currentSlideIndex],
         //to be safe, set to the biggest index
         _currentSlideIndex = _slides.count - 1;
         
-        [self finishIntroductionAndRemoveSelf];
+        [self finishPlayAndRemoveSelf];
     }
 }
 
@@ -159,6 +158,8 @@
 
 - (NSInteger)calcScrollViewOffsetFromCurrentSlideIndex:(NSInteger)currentSlideIndex {
     if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
+        // there is an auxiliary pre slide view, so we have to shift the slide 
+        // index to get the right position
         currentSlideIndex += 1;
     }
     return currentSlideIndex * self.scrollView.frame.size.width;
@@ -178,7 +179,7 @@
     }
 }
 
-- (void)finishIntroductionAndRemoveSelf {
+- (void)finishPlayAndRemoveSelf {
 	if ([(id)self.delegate respondsToSelector:@selector(slidePlayerDidFinish:)]) {
 		[self.delegate slidePlayerDidFinish:self];
 	}
@@ -196,7 +197,7 @@
 }
 
 #warning Check whether the memory is released
-- (void)skipIntroduction {
+- (void)skipPlay {
     [self hideWithFadeOutDuration:0.3];
 }
 
@@ -437,7 +438,7 @@
     
     self.skipButton = [[UIButton alloc] initWithFrame:CGRectMake(self.scrollView.frame.size.width - 80, self.pageControl.frame.origin.y - ((30 - self.pageControl.frame.size.height)/2), 80, 30)];
     [self.skipButton setTitle:NSLocalizedString(@"Skip", nil) forState:UIControlStateNormal];
-    [self.skipButton addTarget:self action:@selector(skipIntroduction) forControlEvents:UIControlEventTouchUpInside];
+    [self.skipButton addTarget:self action:@selector(skipPlay) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.skipButton];
     
     if ([self respondsToSelector:@selector(addConstraint:)]) {
@@ -679,7 +680,7 @@ float easeOutValue(float value) {
 - (void)setSkipButton:(UIButton *)skipButton {
     [_skipButton removeFromSuperview];
     _skipButton = skipButton;
-    [_skipButton addTarget:self action:@selector(skipIntroduction) forControlEvents:UIControlEventTouchUpInside];
+    [_skipButton addTarget:self action:@selector(skipPlay) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_skipButton];
 }
 
@@ -786,7 +787,7 @@ float easeOutValue(float value) {
     [UIView animateWithDuration:duration animations:^{
         self.alpha = 0;
     } completion:^(BOOL finished){
-		[self finishIntroductionAndRemoveSelf];
+		[self finishPlayAndRemoveSelf];
 	}];
 }
 
