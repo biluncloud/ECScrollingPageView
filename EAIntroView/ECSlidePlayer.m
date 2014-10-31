@@ -35,6 +35,10 @@
 
 @implementation ECSlidePlayer
 
+// declare because we have both getter and setter
+@synthesize autoScrolling = _autoScrolling;
+@synthesize borderBehavior = _borderBehavior;
+
 #pragma mark - Init
 
 - (id)initWithFrame:(CGRect)frame {
@@ -248,6 +252,24 @@
         return self.scrollView.frame.size.width;
     }
     return 0;
+}
+
+- (bool)autoScrolling {
+    // if slides count is less than 2, we should disable autoScrolling
+    if (_borderBehavior == kSliderPlayerBorderBehaviorLoop && [_slides count] <= 1) {
+        return false;
+    } else {
+        return _autoScrolling;
+    }
+}
+
+- (ECSlidePlayerBorderBehavior)borderBehavior {
+    // disable loop when slide count is less than 2
+    if (_borderBehavior == kSliderPlayerBorderBehaviorLoop && [_slides count] <= 1) {
+        return kSliderPlayerBorderBehaviorBounce;
+    } else {
+        return _borderBehavior;
+    }
 }
 
 #pragma mark - UI building
@@ -603,7 +625,7 @@ float easeOutValue(float value) {
 -(void)setAutoScrolling:(bool)autoScrolling {
     if (_autoScrolling != autoScrolling) {
         _autoScrolling = autoScrolling;
-        if (autoScrolling) {
+        if (self.autoScrolling) {
             [self enableAutoScroll];
         } else {
             [self disableAutoScroll];
@@ -612,13 +634,6 @@ float easeOutValue(float value) {
 }
 
 - (void)setBorderBehavior:(ECSlidePlayerBorderBehavior)borderBehavior {
-    // TODO: the logic needs to be more integrated
-    // prevent loop when there are less than 2 slides
-    if (borderBehavior == kSliderPlayerBorderBehaviorLoop && [self.slides count] <= 1) {
-        borderBehavior = kSliderPlayerBorderBehaviorBounce;
-        self.autoScrolling = NO;
-    }
-
     if (_borderBehavior != borderBehavior) {
         _borderBehavior = borderBehavior;
         // only rebuild the scrollview when it's already existed
@@ -838,7 +853,7 @@ float easeOutValue(float value) {
 - (void)nextSlide {
     NSInteger nextSlideIndex = self.currentSlideIndex + 1;
     // we don't want to go out of the boundary when the behavior is bounce
-    if (nextSlideIndex == [self.slides count] && self.borderBahavior == kSliderPlayerBorderBehaviorBounce) {
+    if (nextSlideIndex == [self.slides count] && self.borderBehavior == kSliderPlayerBorderBehaviorBounce) {
         return;
     }
 
