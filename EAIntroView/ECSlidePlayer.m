@@ -612,6 +612,13 @@ float easeOutValue(float value) {
 }
 
 - (void)setBorderBehavior:(ECSlidePlayerBorderBehavior)borderBehavior {
+    // TODO: the logic needs to be more integrated
+    // prevent loop when there are less than 2 slides
+    if (borderBehavior == kSliderPlayerBorderBehaviorLoop && [self.slides count] <= 1) {
+        borderBehavior = kSliderPlayerBorderBehaviorBounce;
+        self.autoScrolling = NO;
+    }
+
     if (_borderBehavior != borderBehavior) {
         _borderBehavior = borderBehavior;
         // only rebuild the scrollview when it's already existed
@@ -626,17 +633,17 @@ float easeOutValue(float value) {
         _showMode = showMode;
         switch (showMode) {
         case kSlidePlayerModeScrollImage:
-            self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
             self.autoScrolling = YES;
+            self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
             break;
         case kSlidePlayerModeIntroduction:
-            self.borderBehavior = kSliderPlayerBorderBehaviorSwipeToExit;
             self.autoScrolling = NO;
+            self.borderBehavior = kSliderPlayerBorderBehaviorSwipeToExit;
             break;
         case kSlidePlayerModeCustom:
         default:
-            self.borderBehavior = kSliderPlayerBorderBehaviorBounce;
             self.autoScrolling = NO;
+            self.borderBehavior = kSliderPlayerBorderBehaviorBounce;
             break;
         }
     }
@@ -830,6 +837,11 @@ float easeOutValue(float value) {
 
 - (void)nextSlide {
     NSInteger nextSlideIndex = self.currentSlideIndex + 1;
+    // we don't want to go out of the boundary when the behavior is bounce
+    if (nextSlideIndex == [self.slides count] && self.borderBahavior == kSliderPlayerBorderBehaviorBounce) {
+        return;
+    }
+
     if([self outOfBoundary:nextSlideIndex]) {
         [self hideWithFadeOutDuration:0.3];
     } else {

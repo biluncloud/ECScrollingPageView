@@ -43,7 +43,6 @@ typedef enum {
 
 @property (nonatomic, weak) id<ECSlidePlayerDelegate> delegate;
 
-// these properties are conflict
 @property (nonatomic, assign) NSInteger autoScrollingInterval;
 @property (nonatomic, assign) bool autoScrolling;
 @property (nonatomic, assign) bool tapToNext;
