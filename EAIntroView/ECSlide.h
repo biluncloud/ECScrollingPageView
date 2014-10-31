@@ -46,9 +46,9 @@ typedef void (^VoidBlock)();
 
 @property (nonatomic, strong) NSArray *subviews;
 
-@property (nonatomic,copy) VoidBlock onSlideDidLoad;
-@property (nonatomic,copy) VoidBlock onSlideDidAppear;
-@property (nonatomic,copy) VoidBlock onSlideDidDisappear;
+@property (nonatomic, copy) VoidBlock onSlideDidLoad;
+@property (nonatomic, copy) VoidBlock onSlideDidAppear;
+@property (nonatomic, copy) VoidBlock onSlideDidDisappear;
 
 
 // if customView is set - all other default properties are ignored
