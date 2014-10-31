@@ -55,6 +55,7 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     ECSlidePlayer *slidePlayer = [[ECSlidePlayer alloc] initWithFrame:rootView.bounds andSlides:@[slide1,slide2,slide3,slide4]];
     [slidePlayer setDelegate:self];
     slidePlayer.showMode = kSlidePlayerModeIntroduction;
+    slidePlayer.tapToNext = YES;
     
     [slidePlayer showInView:rootView animateDuration:0.3];
 }
@@ -76,7 +77,8 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     slide4.title = @"This is page 4";
     slide4.desc = sampleDescription4;
     
-    ECSlidePlayer *slidePlayer = [[ECSlidePlayer alloc] initWithFrame:rootView.bounds andSlides:@[slide1,slide2,slide3,slide4]];
+//    ECSlidePlayer *slidePlayer = [[ECSlidePlayer alloc] initWithFrame:rootView.bounds andSlides:@[slide1,slide2,slide3,slide4]];
+    ECSlidePlayer *slidePlayer = [[ECSlidePlayer alloc] initWithFrame:rootView.bounds andSlides:@[slide1,slide2]];
     [slidePlayer setDelegate:self];
     UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"title1"]];
     slidePlayer.titleView = titleView;
@@ -85,8 +87,8 @@ static NSString * const sampleDescription4 = @"Nam libero tempore, cum soluta no
     
     slidePlayer.showMode = kSlidePlayerModeCustom;
     slidePlayer.borderBehavior = kSliderPlayerBorderBehaviorLoop;
-    slidePlayer.tapToNext = NO;
-    slidePlayer.autoScrolling = YES;
+    slidePlayer.tapToNext = YES;
+    slidePlayer.autoScrolling = NO;
 
     [slidePlayer showInView:rootView animateDuration:0.3];
 }

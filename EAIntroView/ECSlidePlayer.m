@@ -178,11 +178,42 @@
         BOOL isBorder = self.currentSlideIndex == 0 || self.currentSlideIndex == [self.slides count] - 1;
         if (isBorder) {
             NSInteger currentPositionInScrollView = self.scrollView.contentOffset.x / self.scrollView.frame.size.width;
+            currentPositionInScrollView--;  // because of the pre auxiliary slide view
             if (currentPositionInScrollView != self.currentSlideIndex) {
                 [self setCurrentSlideIndex:self.currentSlideIndex animated:NO];
+                [self moveSlideViewInside:self.currentSlideIndex];
+                [self moveSlideViewOutside:[self.slides count] - 1 - self.currentSlideIndex];
+            } else {
+                [self moveSlideViewOutside:[self.slides count] - 1 - self.currentSlideIndex];
             }
+        } else {
+            [self moveSlideViewInside:[self.slides count] - 1];
+            [self moveSlideViewInside:0];
         }
     }
+}
+
+// because in loop mode, there is only one slideView for the slides in the boundaries,
+// we have to reuse them. that's why we need to move the slide view around
+- (void)moveSlideViewOutside:(NSInteger)slideIndex {
+    ECSlide *slide = self.slides[slideIndex];
+    CGRect rect = slide.slideView.frame;
+    NSInteger newX = 0;
+    if (slideIndex == 0) {
+        newX = self.scrollView.contentSize.width - slide.slideView.frame.size.width;
+    } else if (slideIndex == [self.slides count] - 1) {
+        newX = 0;
+    }
+    rect.origin.x = newX;
+    slide.slideView.frame = rect;
+}
+
+- (void)moveSlideViewInside:(NSInteger)slideIndex {
+    ECSlide *slide = self.slides[slideIndex];
+    CGRect rect = slide.slideView.frame;
+    slideIndex += 1;
+    rect.origin.x = slideIndex * self.scrollView.frame.size.width;
+    slide.slideView.frame = rect;
 }
 
 - (void)finishPlayAndRemoveSelf {
@@ -426,21 +457,14 @@
         }
             
         case kSliderPlayerBorderBehaviorLoop: {
+            // the two slides in the boundary will be reused for the auxiliary slides
+            // by setting the origin of slide.slideView to different values
             // add post slide view
-            ECSlide *postSlideView = _slides[0];
-            postSlideView.slideView = [self viewForSlide:postSlideView atXIndex:xIndex];
-            [self.scrollView addSubview:postSlideView.slideView];
-            // the callback is not needed because _slides[0] is already informed
-            // if(postSlideView.onSlideDidLoad) postSlideView.onSlideDidLoad();
+            // so we just update the xIndex here
+            *xIndex += self.scrollView.frame.size.width;
             
-            // add pre slide view
-            // NOTICE: here the x start position is 0
-            CGFloat xPos = 0;
-            ECSlide *preSlideView = _slides[[self.slides count] - 1];
-            preSlideView.slideView = [self viewForSlide:preSlideView atXIndex:&xPos];
-            [self.scrollView addSubview:preSlideView.slideView];
-            // the callback is not needed because _slides[[self.slides count] - 1] is already informed
-            // if(preSlideView.onSlideDidLoad) preSlideView.onSlideDidLoad();
+            // move the last view out first because the first view will be showed first
+            [self moveSlideViewOutside:[self.slides count] - 1];
             break;
         }
             
