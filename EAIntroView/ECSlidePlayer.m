@@ -64,18 +64,18 @@
 #pragma mark - Private
 
 - (void)applyDefaultsToSelfDuringInitializationWithframe:(CGRect)frame slides:(NSArray *)slidesArray {
+    _slides = [slidesArray copy];
     self.autoScrollingInterval = 3;
     self.autoScrolling = YES;
     self.tapToNext = NO;
-    _borderBehavior = kSliderPlayerBorderBehaviorLoop;
-    _showMode = kSlidePlayerModeScrollImage;
+    self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
+    self.showMode = kSlidePlayerModeScrollImage;
     self.easeOutCrossDisolves = YES;
     self.hideOffscreenSlides = YES;
     self.titleViewY = 20.0f;
     self.pageControlY = 60.0f;
     self.bgViewContentMode = UIViewContentModeScaleAspectFill;
     self.motionEffectsRelativeValue = 40.0f;
-    _slides = [slidesArray copy];
     [self buildUI];
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
@@ -614,7 +614,10 @@ float easeOutValue(float value) {
 - (void)setBorderBehavior:(ECSlidePlayerBorderBehavior)borderBehavior {
     if (_borderBehavior != borderBehavior) {
         _borderBehavior = borderBehavior;
-        [self rebuildScrollView];
+        // only rebuild the scrollview when it's already existed
+        if (self.scrollView) {
+            [self rebuildScrollView];
+        }
     }
 }
 
@@ -801,8 +804,7 @@ float easeOutValue(float value) {
 }
 
 - (void)setCurrentSlideIndex:(NSInteger)currentSlideIndex animated:(BOOL)animated {
-    if(currentSlideIndex < 0 ||
-       (currentSlideIndex >= [self.slides count] && self.borderBehavior != kSliderPlayerBorderBehaviorLoop)) {
+      if ([self outOfBoundary:currentSlideIndex]) {
         NSLog(@"Wrong currentSlideIndex received: %ld",(long)currentSlideIndex);
         return;
     }
@@ -827,11 +829,16 @@ float easeOutValue(float value) {
 }
 
 - (void)nextSlide {
-    if(self.currentSlideIndex + 1 >= [self.slides count] && self.borderBehavior != kSliderPlayerBorderBehaviorLoop) {
+    NSInteger nextSlideIndex = self.currentSlideIndex + 1;
+    if([self outOfBoundary:nextSlideIndex]) {
         [self hideWithFadeOutDuration:0.3];
     } else {
-        [self setCurrentSlideIndex:self.currentSlideIndex + 1 animated:YES];
+        [self setCurrentSlideIndex:nextSlideIndex animated:YES];
     }
+}
+
+- (bool)outOfBoundary:(NSInteger)index {
+    return (index < 0) || (index >= [self.slides count] && self.borderBehavior != kSliderPlayerBorderBehaviorLoop);
 }
 
 #pragma mark - Timer
