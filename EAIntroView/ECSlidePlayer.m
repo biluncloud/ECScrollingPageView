@@ -162,6 +162,16 @@
     return value;
 }
 
+- (NSInteger)nextSlideIndex:(NSInteger)index {
+    NSInteger next = index + 1;
+    if (next == [self.slides count]) {
+        if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
+            next = 0;
+        }
+    }
+    return next;
+}
+
 - (NSInteger)calcScrollViewOffsetFromCurrentSlideIndex:(NSInteger)currentSlideIndex {
     if (self.borderBehavior == kSliderPlayerBorderBehaviorLoop) {
         // there is an auxiliary pre slide view, so we have to shift the slide 
@@ -536,7 +546,7 @@
     
     if (slide == (_slides.count - 1) && self.borderBehavior == kSliderPlayerBorderBehaviorSwipeToExit) {
         self.alpha = ((self.scrollView.frame.size.width*_slides.count)-self.scrollView.contentOffset.x)/self.scrollView.frame.size.width;
-    } else if (self.borderBehavior != kSliderPlayerBorderBehaviorLoop) {
+    } else {
         [self crossDissolveForOffset:offset];
     }
     
@@ -569,7 +579,7 @@ float easeOutValue(float value) {
     self.slideBgFront.alpha = 1;
     self.slideBgFront.image = [self bgForSlide:slide];
     self.slideBgBack.alpha = 0;
-    self.slideBgBack.image = [self bgForSlide:slide+1];
+    self.slideBgBack.image = [self bgForSlide:[self nextSlideIndex:slide]];
     
     float backLayerAlpha = alphaValue;
     float frontLayerAlpha = (1 - alphaValue);
