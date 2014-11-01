@@ -72,6 +72,7 @@
     self.autoScrollingInterval = 3;
     self.autoScrolling = YES;
     self.tapToNext = NO;
+    self.skipButtonMode = kSliderPlayerSkipButtonHide;
     self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
     self.showMode = kSlidePlayerModeScrollImage;
     self.easeOutCrossDisolves = YES;
@@ -497,6 +498,9 @@
     [self.skipButton setTitle:NSLocalizedString(@"Skip", nil) forState:UIControlStateNormal];
     [self.skipButton addTarget:self action:@selector(skipPlay) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.skipButton];
+    if (self.skipButtonMode == kSliderPlayerSkipButtonHide) {
+        self.skipButton.alpha = 0;
+    }
     
     if ([self respondsToSelector:@selector(addConstraint:)]) {
         self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
@@ -604,8 +608,8 @@ float easeOutValue(float value) {
         }
     }
     
-    if(self.skipButton) {
-        if(!self.showSkipButtonOnlyOnLastSlide) {
+    if (self.skipButton && self.skipButtonMode != kSliderPlayerSkipButtonHide) {
+        if (self.skipButtonMode != kSliderPlayerSkipButtonShowOnlyOnLastSlide) {
             [self.skipButton setAlpha:1.0];
         } else if(slide < (long)[self.slides count] - 2) {
             [self.skipButton setAlpha:0.0];
@@ -684,15 +688,18 @@ float easeOutValue(float value) {
         case kSlidePlayerModeScrollImage:
             self.autoScrolling = YES;
             self.borderBehavior = kSliderPlayerBorderBehaviorLoop;
+            self.skipButtonMode = kSliderPlayerSkipButtonHide;
             break;
         case kSlidePlayerModeIntroduction:
             self.autoScrolling = NO;
             self.borderBehavior = kSliderPlayerBorderBehaviorSwipeToExit;
+            self.skipButtonMode = kSliderPlayerSkipButtonAlways;
             break;
         case kSlidePlayerModeCustom:
         default:
             self.autoScrolling = NO;
             self.borderBehavior = kSliderPlayerBorderBehaviorBounce;
+            self.skipButtonMode = kSliderPlayerSkipButtonAlways;
             break;
         }
     }
@@ -748,8 +755,8 @@ float easeOutValue(float value) {
     [self addSubview:_skipButton];
 }
 
-- (void)setShowSkipButtonOnlyOnLastSlide:(bool)showSkipButtonOnlyOnLastSlide {
-    _showSkipButtonOnlyOnLastSlide = showSkipButtonOnlyOnLastSlide;
+- (void)setSkipButtonMode:(ECSLidePlayerSkipButtonMode)skipButtonMode {
+    _skipButtonMode = skipButtonMode;
     
     float offset = [self calcOffsetFromCurrentPosition];
     [self crossDissolveForOffset:offset];

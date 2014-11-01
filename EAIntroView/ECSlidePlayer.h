@@ -28,6 +28,12 @@ typedef enum {
     kSliderPlayerBorderBehaviorBounce       // bounce when user wants to swipe to the slide out of boundary
 } ECSlidePlayerBorderBehavior;
 
+typedef enum {
+    kSliderPlayerSkipButtonAlways,
+    kSliderPlayerSkipButtonShowOnlyOnLastSlide,
+    kSliderPlayerSkipButtonHide
+} ECSLidePlayerSkipButtonMode;
+
 @class ECSlidePlayer;
 
 @protocol ECSlidePlayerDelegate
@@ -46,12 +52,12 @@ typedef enum {
 @property (nonatomic, assign) NSInteger autoScrollingInterval;
 @property (nonatomic, assign) bool autoScrolling;
 @property (nonatomic, assign) bool tapToNext;
+@property (nonatomic, assign) ECSLidePlayerSkipButtonMode skipButtonMode;
 @property (nonatomic, assign) ECSlidePlayerBorderBehavior borderBehavior;
 @property (nonatomic, assign) ECSlidePlayerMode showMode;
 
 @property (nonatomic, assign) bool hideOffscreenSlides;
 @property (nonatomic, assign) bool easeOutCrossDisolves;
-@property (nonatomic, assign) bool showSkipButtonOnlyOnLastSlide;
 @property (nonatomic, assign) bool useMotionEffects;
 @property (nonatomic, assign) CGFloat motionEffectsRelativeValue;
 @property (nonatomic, strong) UIImage *bgImage;
